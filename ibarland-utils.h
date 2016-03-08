@@ -3,11 +3,14 @@
  * @author Ian Barland, ibarland@radford.edu
  * @version 2016-Feb-21
  *
- * Macros provided:
+ * Macros/typedefs provided:
  *   ALLOC
  *   ALLOC_ARRAY
  *   DPRINTF      (N.B. To enable debugging, `#define DEBUG` in a file BEFORE `#include`ing this .h.)
  *   SIZEOF_ARRAY (N.B. good only for local, stack-allocated arrays, not pointers)
+ *   stringConst
+ *   natNum
+ *   lnatNum
  *   
  * Functions/constants provided:
  *    sgn
@@ -30,6 +33,9 @@
  *    testChar
  *    testInt
  *    testBool
+ *    printTestMsg
+ *    printTestSummary
+ *    resetTestSummary
  */
 
 
@@ -50,6 +56,10 @@
 
 #include <stdbool.h> // for testBool
 
+typedef char const * const   stringConst;
+typedef unsigned int         natNum;
+typedef unsigned long        lnatNum;
+
 #define ALLOC(typ)               (typ *) (malloc(sizeof( typ )))
 #define ALLOC_ARRAY(n, typ)      (typ *) (calloc((unsigned) n, sizeof( typ )))  // N.B. calloc init's the memory to 0.
 
@@ -61,24 +71,28 @@
 
 
 /* 'signum', the sign of a number (+1, 0, or -1). */
-int sgn( long double x );
+int sgn( long double const x );
 
 /* modPos is like %, except that return val is in [0, b), not (-b, b) */
-int   modPos( int n,  int b );
-long lmodPos( long n, long b );
+int   modPos( int const n,  int const b );
+long lmodPos( long const n, long const b );
+
+/* a-b, with a floor of 0.  Helpful for both signed & unsigned arithmetic. */
+int monus( int a, int b );
+natNum monus_u( natNum a, natNum b );
 
 
 extern double M_TAU;  // tau = 2*pi
-double degToRad(double theta);
-double radToDeg(double theta);
+double degToRad(double const theta);
+double radToDeg(double const theta);
 
-bool approxEquals(float x, float y);
+bool approxEquals(double const x, double const y);
 
 // string-equal and string-different -- using `strcmp` in boolean expressions goofs me up otherwise.
-bool streq( char* s1, char* s2 );
-bool strdiff( char* s1, char* s2 );
-// We use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
-bool strempty( char* s );
+bool streq( stringConst s1, stringConst s2 );
+bool strdiff( stringConst s1, stringConst s2 );
+// Note that we use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
+bool strempty( stringConst s );
 
 
 
@@ -99,36 +113,24 @@ bool strempty( char* s );
 bool print_on_test_success;
 
 
-/* Are two strings the same (or, both null)?
+/* Are two values the same?
  * If not, print an error message;
  * if so, and print_on_test_success, print a very-short indicator.
  */
-void testStr( char* actual, char* expected );
+void testStr( stringConst actual, stringConst expected ); // actual==expected==null passes.
+void testChar( char const actual, char const expected );
+void testInt( int const actual, int const expected );
+void testNatNum( natNum actual, natNum expected );
+void testLong( long const actual, long const expected );
+void testDouble( double const actual, double const expected );
+void testBool( bool const actual, bool const expected );
 
-/* Are two chars the same?
- * If not, print an error message;
- * if so, and print_on_test_success, print a very-short indicator.
- */
-void testChar( char actual, char expected );
+// Print any message to the error-log file:
+#define printTestMsg( fmt, args ... ) fprintf(stdout, fmt, ##args)
 
-/* Are two ints the same?
- * If not, print an error message;
- * if so, and print_on_test_success, print a very-short indicator.
- */
-void testInt( int actual, int expected );
-
-/* Are two ints the same?
- * If not, print an error message;
- * if so, and print_on_test_success, print a very-short indicator.
- */
-void testDouble( double actual, double expected );
-
-/* Are two bools the same?
- * If not, print an error message;
- * if so, and print_on_test_success, print a very-short indicator.
- */
-void testBool( bool actual, bool expected );
-
+// Print summary statistics of tests completed/passed.
+void printTestSummary();
+  
 
 /* Return the #microseconds since the standard epoch. */
 long time_usec();
@@ -136,12 +138,12 @@ long time_usec();
 /* Return a string numeral, for the given int.
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
  */
-char* intToString( int n );
+char* intToString( int const n );
 
 /* Return a string numeral, for the given long.
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
  */
-char* longToString( long n );
+char* longToString( long const n );
 
 
 
