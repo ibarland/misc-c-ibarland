@@ -15,11 +15,11 @@ run-utils-test: ibarland-utils-test
 	ibarland-utils-test
 
 ibarland-utils-test: ibarland-utils.o ibarland-utils-test.c
-	gcc -Wall ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o
+	gcc -Wall -Wextra ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o
 	./ibarland-utils-test
 
 ibarland-utils.o: ibarland-utils.c ibarland-utils.h
-	gcc -Wall -c ibarland-utils.c
+	gcc -Wall -Wextra -c ibarland-utils.c
 
 
 run-utils-test-memory: ibarland-utils-test

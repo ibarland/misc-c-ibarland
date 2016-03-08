@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <assert.h>
+#include <string.h> // for strcmp
 #include <sys/time.h>
 #include "ibarland-utils.h"
 
@@ -51,6 +53,29 @@ void testChar( char actual, char expected ) {
         }
     }
 
+/* Are two doubles the same?
+ * If not, print an error message;
+ * if so, and print_on_test_success, print a very-short indicator.
+ */
+void testDouble( double actual, double expected ) {
+    ++testCount;
+    if (actual==expected) {
+        if (print_on_test_success) fprintf(stderr, ".");
+        if (testCount % TEST_INDICATOR_GROUP_SIZE == 0) fprintf(stderr," ");
+        }
+    else {
+        fprintf(stderr, "**test-fail:\nactual: %lf\nexpect: %lf.\n", actual, expected);
+        ++testFailCount;
+        }
+    }
+
+
+
+
+
+
+
+
 
 /* Are two ints the same?
  * If not, print an error message;
@@ -63,7 +88,7 @@ void testInt( int actual, int expected ) {
         if (testCount % TEST_INDICATOR_GROUP_SIZE == 0) fprintf(stderr," ");
         }
     else {
-        fprintf(stderr, "**test-fail:\nactual: \"%d\"\nexpect: \"%d\".\n", actual, expected);
+        fprintf(stderr, "**test-fail:\nactual: %i\nexpect: %i.\n", actual, expected);
         ++testFailCount;
         }
     }
@@ -79,7 +104,7 @@ void testBool( bool actual, bool expected ) {
         if (testCount % TEST_INDICATOR_GROUP_SIZE == 0) fprintf(stderr," ");
         }
     else {
-        fprintf(stderr, "**test-fail (as bools):\nactual: %d\nexpect: %d.\n", actual, expected);
+        fprintf(stderr, "**test-fail (as bools):\nactual: %i\nexpect: %i.\n", actual, expected);
         ++testFailCount;
         }
     }
@@ -102,7 +127,7 @@ char* intToString( int n ) {
   int nSameDigits = (n==0) ? 1 : (abs(n) < 0 ? abs(n+1) : abs(n)); // A version of n that has the same #digits.
   int numDigits = (int)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
   char* nAsStr = (char*) malloc( (numDigits+1+1) * sizeof(char) ); // +1 for sign, +1 for terminating null.
-  sprintf( nAsStr, "%d", n );
+  sprintf( nAsStr, "%i", n );
   return nAsStr;
   }
 
@@ -119,3 +144,48 @@ char* longToString( long n ) {
   sprintf( nAsStr, "%ld", n );
   return nAsStr;
   }
+
+/* 'signum', the sign of a number (+1, 0, or -1).
+ * For a templated C++ verison, see: http://stackoverflow.com/a/4609795/320830
+ * or use a macro:   #define SGN(x)  (x)>0 ? 1 : ((x)<0 ? -1 : 0)
+ * This version relies on implicit casting up to a long double.
+ */
+int sgn( long double x ) { return (x > 0) ? 1 : ((x < 0) ? -1 : 0); }
+
+double M_TAU = 2* M_PI; // hmm, misleading to name it "M_", since it's not actually in math.h?
+double degToRad(double theta) { return theta/360 * M_TAU; }
+double radToDeg(double theta) { return theta/M_TAU * 360; }
+
+
+/* modPos is like %, except that return val is in [0, b), not (-b, b) */
+int modPos( int n, int b ) {
+  return (sgn(n%b) != -sgn(b)) ? n%b : (n%b + b);
+  }
+long lmodPos( long n, long b ) {
+  return (sgn(n%b) != -sgn(b)) ? n%b : n%b + b;
+  }
+
+// Based on:  http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+// Key observation: the bit-patterns for floats are lexicographic.
+// So to compare floats, cast the bit-patterns to int and check that the difference is small!
+// Only glitch is to handle two's-complement ... and NaNs.
+//
+bool approxEqualsUlps(float x, float y, int maxUlps) {
+    if (isnan(x) || isnan(y)) return false;
+    // Make sure maxUlps is non-negative and small enough that the
+    // default NAN won't compare as equal to anything.
+    assert(maxUlps > 0 && maxUlps < 4 * 1024 * 1024);
+    // Treat the bit-patterns as ints:
+    int xInt = *(int*)&x;
+    int yInt = *(int*)&y;
+    DPRINTF( "x,y as ints: %i,%i.\n", xInt, yInt );
+    // Make lexicographically ordered as a twos-complement int
+    if (xInt < 0) xInt = 0x80000000 - xInt;
+    if (yInt < 0) yInt = 0x80000000 - yInt;
+    DPRINTF( "x,y as complemented ints: %i,%i.\n", xInt, yInt );
+    return (abs(xInt - yInt) <= maxUlps);
+    }
+
+// Are two doubles approximately-equal?  
+// Tolerance is, crudely: within 1 in 10billion  (10^16 approx. double precision / 1_000_000)
+bool approxEquals(float x, float y) { return approxEqualsUlps(x,y,1000); }

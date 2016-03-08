@@ -4,10 +4,20 @@
  * @version 2016-Feb-21
  *
  * Macros provided:
+ *   ALLOC
+ *   ALLOC_ARRAY
  *   DPRINTF      (N.B. To enable debugging, `#define DEBUG` in a file BEFORE `#include`ing this .h.)
  *   SIZEOF_ARRAY (N.B. good only for local, stack-allocated arrays, not pointers)
  *   
- * Functions provided:
+ * Functions/constants provided:
+ *    sgn
+ *    modPos
+ *    lmodPos
+ *    M_TAU     = 2*M_PI
+ *    degToRad
+ *    radToDeg
+ *    approxEquals
+ * 
  *    time_usec
  *    intToString    (N.B. Caller must free the returned-string.)
  *    longToString   (N.B. Caller must free the returned-string.)
@@ -38,8 +48,10 @@
 #ifndef IBARLAND_UTILS_H
 #define IBARLAND_UTILS_H
 
-#include <string.h> // for strcmp
-#include <stdbool.h> // for people calling TEST_BOOL
+#include <stdbool.h> // for testBool
+
+#define ALLOC(typ)               (typ *) (malloc(sizeof( typ )))
+#define ALLOC_ARRAY(n, typ)      (typ *) (calloc((unsigned) n, sizeof( typ )))  // N.B. calloc init's the memory to 0.
 
 #define SIZEOF_ARRAY(arr) (sizeof(arr)/sizeof(arr[0]))
 /* CAUTION: `SIZEOF_ARRAY` works ONLY with arrays declared with a `[]` 
@@ -47,10 +59,25 @@
  * Otherwise we're seeing the array as a pointer, whose sizeof is 1word, regardless of array size).
  */
 
+
+/* 'signum', the sign of a number (+1, 0, or -1). */
+int sgn( long double x );
+
+/* modPos is like %, except that return val is in [0, b), not (-b, b) */
+int   modPos( int n,  int b );
+long lmodPos( long n, long b );
+
+
+extern double M_TAU;  // tau = 2*pi
+double degToRad(double theta);
+double radToDeg(double theta);
+
+bool approxEquals(float x, float y);
+
 // string-equal and string-different -- using `strcmp` in boolean expressions goofs me up otherwise.
 bool streq( char* s1, char* s2 );
 bool strdiff( char* s1, char* s2 );
-// Note that we use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
+// We use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
 bool strempty( char* s );
 
 
@@ -90,6 +117,12 @@ void testChar( char actual, char expected );
  */
 void testInt( int actual, int expected );
 
+/* Are two ints the same?
+ * If not, print an error message;
+ * if so, and print_on_test_success, print a very-short indicator.
+ */
+void testDouble( double actual, double expected );
+
 /* Are two bools the same?
  * If not, print an error message;
  * if so, and print_on_test_success, print a very-short indicator.
@@ -109,5 +142,7 @@ char* intToString( int n );
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
  */
 char* longToString( long n );
+
+
 
 #endif
