@@ -8,6 +8,36 @@
 # For example, if ibarland-utils.c is edited/updated,
 # this would 
 
+# command-line args for C:
+#
+CC       = gcc
+CFLAGS   = -g \
+           -Wall -Wextra \
+           -Wpointer-arith -Wcast-qual -Wcast-align \
+           -Wwrite-strings -Wconversion -Wno-incompatible-pointer-types-discards-qualifiers \
+	   -Woverloaded-virtual
+#
+# don't include:
+# -Wincompatible-pointer-types-discards-qualifiers -- triggers all sorts of errors if passing a string-literal to a function wanting a char*.
+# -pedantic: doesn't allow fancier gcc features (like var-adic macros like DPRINTF)
+# -Wtraditional: gave me headaches with "printf already defined in a block"
+# -Wstrict-prototype, because that disallows #  "double foo();" and requires "double foo(void);" instead.
+# -Wenum-clash: it's available for C++ only?
+#
+
+
+CPPFLAGS = -I$(home)/lib
+LDLIBS   = -lm
+#STDHEADERS  = $(home)/lib/macros.h
+
+
+# command-line args for C++
+#
+C++		= g++
+C++FLAGS	= $(CFLAGS) -Wenum-clash
+
+
+
 test: run-utils-test run-utils-test-memory command-line-options-test
 	command-line-options-test
 
@@ -15,11 +45,10 @@ run-utils-test: ibarland-utils-test
 	ibarland-utils-test
 
 ibarland-utils-test: ibarland-utils.o ibarland-utils-test.c
-	gcc -Wall -Wextra ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o
-	./ibarland-utils-test
+	$(CC) $(CFLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o
 
 ibarland-utils.o: ibarland-utils.c ibarland-utils.h
-	gcc -Wall -Wextra -c ibarland-utils.c
+	$(CC) $(CFLAGS) -c ibarland-utils.c
 
 
 run-utils-test-memory: ibarland-utils-test
@@ -39,16 +68,18 @@ run-utils-test-memory: ibarland-utils-test
 	@# The  `cmdA 2>&1 | cmdB` means to pipe cmdA's stderr into cmdB's stdin.
 
 clean:
-	rm -f  *.o  ibarland-utils-test command-line-options-example  command-line-options-test
+	rm -f  *.o  ibarland-utils-test command-line-options-example  command-line-options-test 
+	rm -f *.exe *.DSYM
+	rm -rf *.app/
 
 
 command-line-options-example: command-line-options-example.c command-line-options.o ibarland-utils.o
-	gcc -Wall -Wextra command-line-options-example.c command-line-options.o ibarland-utils.o -o sample -lm
+	$(CC) $(CFLAGS) command-line-options-example.c command-line-options.o ibarland-utils.o -o sample -lm
 
 command-line-options.o: command-line-options.c command-line-options.h ibarland-utils.o
-	gcc -Wall -Wextra -c command-line-options.c
+	$(CC) $(CFLAGS) -c command-line-options.c
 
 command-line-options-test: command-line-options.c command-line-options.h ibarland-utils.o
-	gcc -Wall -Wextra command-line-options-test.c -o command-line-options-test ibarland-utils.o -lm
+	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o -lm
 
 
