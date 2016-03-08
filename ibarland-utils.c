@@ -42,15 +42,12 @@ void printTestSuccess() {
     // Use a macro so that we don't have to repeat for each type.
 
 void printTestSummary() {
-    printTestMsg( "\nvvvvvvvvvvvv\n" );
+    printTestMsg( "\n" );
+    printTestMsg( "vvvvvvvvvvvvvvvvvvv\n" );
     printTestMsg( "%5d tests run.\n", testCount );
-    if (testFailCount==0) {
-        printTestMsg( "      All passed!\n" );
-        }
-    else {
-        printTestMsg( "%5d tests passed;\n%5d tests FAILED (%f%%)\n", testCount-testFailCount, testFailCount, (100.0*testFailCount/testCount) );
-        }
-    printTestMsg( "^^^^^^^^^^^^\n" );
+    if (testFailCount==0) { printTestMsg( "      All passed!\n" ); }
+    else { printTestMsg( "%5d tests passed;\n%5d tests FAILED (%f%%)\n", testCount-testFailCount, testFailCount, (100.0*testFailCount/testCount) ); }
+    printTestMsg( "^^^^^^^^^^^^^^^^^^^\n" );
     }
 
 /* Are two strings the same (or, both null)?
@@ -81,7 +78,7 @@ void testChar( char const actual, char const expected ) {
  */
 void testDouble( double const actual, double const expected ) {
     ++testCount;
-    if (actual==expected) { printTestSuccess(); }
+    if (actual==expected || (isnan(actual) && isnan(expected))) { printTestSuccess(); }
     else { printTestFailure(actual, expected, "%lf", ""); }
     }
 
@@ -168,7 +165,7 @@ char* longToString( long const n ) {
  * or use a macro:   #define SGN(x)  (x)>0 ? 1 : ((x)<0 ? -1 : 0)
  * This version relies on implicit casting up to a long double.
  */
-int sgn( long double const x ) { return (x > 0) ? 1 : ((x < 0) ? -1 : 0); }
+float sgn( long double const x ) { return isnan(x) ? NAN : ((x > 0) ? 1.0 : ((x < 0) ? -1.0 : 0.0)); }
 
 /* a-b, with a floor of 0.  Helpful for unsgiend arithmetic. */
 // Should make this int,int -> natNum ?   ->int?
@@ -188,31 +185,44 @@ long lmodPos( long const n, long const b ) {
   return (sgn(n%b) != -sgn(b)) ? n%b : n%b + b;
   }
 
+bool isinfinite( double x ) {
+    return !isfinite(x) && !isnan(x);
+    }
+
 // Based on:  http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 // Key observation: the bit-patterns for floats are lexicographic.
 // So to compare floats, cast the bit-patterns to int and check that the difference is small!
 // Only glitch is to handle two's-complement ... and NaNs.
 //
-bool approxEqualsUlps(double const x, double const y, natNum const maxUlps) {
-    assert(sizeof(float)==sizeof(int));
+// Tolerance is, crudely: within 1 in 1,000,000  (2^24 ulps / 10)
+//
+bool approxEqualsUlps(double const x, double const y, unsigned long const maxUlps) {
+    assert(sizeof(double)==sizeof(long int));
     if (isnan(x) || isnan(y)) return false;
     // Make sure maxUlps is non-negative and small enough that the
     // default NAN won't compare as equal to anything.
     assert(maxUlps > 0 && maxUlps < 4 * 1024 * 1024);
     // Treat the bit-patterns as ints:
-    int const xInt = *(const int* const)&x;
-    int const yInt = *(const int* const)&y;
+    long int const xLong = *(const long int* const)&x;
+    long int const yLong = *(const long int* const)&y;
     DPRINTF( "x,y as ints: %i,%i.\n", xInt, yInt );
     // Make lexicographically ordered as a twos-complement int
     // TODO: should this be 0x80000000 - xInt ?
-    int const xIntPos = abs(xInt);
-    int const yIntPos = abs(yInt);
+    long int const xLongPos = labs(xLong);
+    long int const yLongPos = labs(yLong);
     DPRINTF( "x,y as complemented ints: %i,%i.\n", xIntPos, yIntPos );
-    return (((unsigned int) abs(xIntPos - yIntPos)) <= maxUlps);
+    return (((unsigned long int) labs(xLongPos - yLongPos)) <= maxUlps);
     }
 
 // Are two doubles approximately-equal?  
-// Tolerance is, crudely: within 1 in 1,000,000  (2^24 ulps / 10)
-bool approxEquals(double const x, double const y) { return approxEqualsUlps(x,y,10u); }
-//bool approxEqualsRel(double x, double y, double relativeTolerance) {
-//  }
+bool approxEqualsRel(double x, double y, double relativeTolerance) {
+    if (isnan(x) || isnan(y)) return false;
+    if (isinfinite(x) && isinfinite(y)) return (sgn(x)==sgn(y));
+    
+    
+
+    }
+
+bool approxEquals(double const x, double const y) { 
+    return approxEqualsRel(x,y,0.00001);
+    }

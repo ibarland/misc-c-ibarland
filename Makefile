@@ -69,8 +69,8 @@ run-utils-test-memory: ibarland-utils-test
 
 clean:
 	rm -f  *.o  ibarland-utils-test command-line-options-example  command-line-options-test 
-	rm -f *.exe *.DSYM
-	rm -rf *.app/
+	rm -f *.exe
+	rm -rf *.app/  *.dSYM
 
 
 command-line-options-example: command-line-options-example.c command-line-options.o ibarland-utils.o

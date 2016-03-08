@@ -11,6 +11,10 @@
  *   stringConst
  *   natNum
  *   lnatNum
+ *   MIN
+ *   MAX
+ *   MINF  // handle nan w/o a type-error
+ *   MAXF  
  *   
  * Functions/constants provided:
  *    sgn
@@ -19,6 +23,7 @@
  *    M_TAU     = 2*M_PI
  *    degToRad
  *    radToDeg
+ *    isinfinite
  *    approxEquals
  * 
  *    time_usec
@@ -70,8 +75,14 @@ typedef unsigned long        lnatNum;
  */
 
 
+
+#define MIN(X,Y)  (((X) <= (Y)) ? (X) : (Y))
+#define MAX(X,Y)  (((X) >= (Y)) ? (X) : (Y))
+#define MINF(X,Y)  (((X) <= (Y)) ? (X) : (isnan(X) ? NAN : Y))
+#define MAXF(X,Y)  (((X) >= (Y)) ? (X) : (isnan(X) ? NAN : Y))
+
 /* 'signum', the sign of a number (+1, 0, or -1). */
-int sgn( long double const x );
+float sgn( long double const x );
 
 /* modPos is like %, except that return val is in [0, b), not (-b, b) */
 int   modPos( int const n,  int const b );
@@ -85,7 +96,7 @@ natNum monus_u( natNum a, natNum b );
 extern double M_TAU;  // tau = 2*pi
 double degToRad(double const theta);
 double radToDeg(double const theta);
-
+bool isinfinite( double x );
 bool approxEquals(double const x, double const y);
 
 // string-equal and string-different -- using `strcmp` in boolean expressions goofs me up otherwise.

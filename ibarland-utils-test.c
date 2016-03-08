@@ -46,16 +46,24 @@ int main() {
     testBool( time_usec() < 3786912000L*1000000L, true );  // < 2090 AD
     printTestMsg("\nCurrent time in ms is %ld. (2016=%ld, 2017=%ld).\n", time_usec(), 1451606400L*1000000L, 1483228800L*1000000L );
     
+    testDouble(NAN,NAN);
+    
     printTestMsg("\nTesting sgn, monus, mod: ");
-    testInt( sgn(0), 0 );
-    testInt( sgn(-0), 0 );
-    testInt( sgn(0.0), 0 );
-    testInt( sgn(-0.0), 0 );
-    testInt( sgn(0.01), 1 );
-    testInt( sgn(1.0), 1 );
-    testInt( sgn(30), 1 );
-    testInt( sgn(DBL_MIN), 1 );
-    testInt( sgn(DBL_MAX), 1 );
+    testDouble( sgn(0), 0 );
+    testDouble( sgn(-0), 0 );
+    testDouble( sgn(0.0), 0 );
+    testDouble( sgn(-0.0), 0 );
+    testDouble( sgn(0.01), 1 );
+    testDouble( sgn(1.0), 1 );
+    testDouble( sgn(30), 1 );
+    testDouble( sgn(DBL_MIN), 1 );
+    testDouble( sgn(DBL_MAX), 1 );
+
+    testDouble( sgn(INFINITY), 1 );
+    testDouble( sgn(-INFINITY), -1 );
+    testDouble( sgn(-1.0/INFINITY),  0.0 );
+    testDouble( sgn(-1.0/INFINITY), -0.0 );
+    testDouble( sgn(NAN), NAN );
     
     testInt( monus(7,3), 4 );
     testInt( monus(3,7), 0 );
@@ -131,6 +139,57 @@ int main() {
     testLong( lmodPos(INT_MIN+1, -2), -1 );
     testLong( lmodPos(LONG_MIN, -2), 0 );
     testLong( lmodPos(LONG_MIN+1, -2), -1 );
+    
+    printTestMsg( "\nTesting isinfinities, max, min.\n" );
+    testBool( isinfinite(INFINITY), true );
+    testBool( isinfinite(-INFINITY), true );
+    testBool( isinfinite(NAN), false );
+    testBool( isinfinite(LONG_MAX), false );
+    
+    testInt( MAX(2,3), 3 );
+    testInt( MAX(3,2), 3 );
+    testInt( MAX(3,3), 3 );
+    testInt( MAX(-3,-2), -2 );
+    testInt( MAX(INT_MAX, 3), INT_MAX );
+    testInt( MAX(INT_MIN, 3), 3 );
+
+    testInt( MIN(2,3), 2 );
+    testInt( MIN(3,2), 2 );
+    testInt( MIN(3,3), 3 );
+    testInt( MIN(-3,-2), -3 );
+    testInt( MIN(INT_MAX, 3), 3 );
+    testInt( MIN(INT_MIN, 3), INT_MIN );
+    
+    testDouble( MAXF( INFINITY, 7), INFINITY );
+    testDouble( MAXF(-INFINITY, 7), 7 );
+    testDouble( MAXF( INFINITY,  INFINITY),  INFINITY );
+    testDouble( MAXF( INFINITY, -INFINITY),  INFINITY );
+    testDouble( MAXF(-INFINITY,  INFINITY),  INFINITY );
+    testDouble( MAXF(-INFINITY, -INFINITY), -INFINITY );
+
+    testDouble( MINF( INFINITY, 7), 7 );
+    testDouble( MINF(-INFINITY, 7), -INFINITY );
+    testDouble( MINF( INFINITY,  INFINITY),  INFINITY );
+    testDouble( MINF( INFINITY, -INFINITY), -INFINITY );
+    testDouble( MINF(-INFINITY,  INFINITY), -INFINITY );
+    testDouble( MINF(-INFINITY, -INFINITY), -INFINITY );
+
+    testDouble( MINF(NAN, 7 ), NAN );
+    testDouble( MINF(7, NAN ), NAN );
+    testDouble( MINF(NAN, NAN ), NAN );
+    testDouble( MINF(-INFINITY, NAN ), NAN );
+    testDouble( MINF( INFINITY, NAN ), NAN );
+    testDouble( MINF(NAN, -INFINITY ) , NAN );
+    testDouble( MINF(NAN,  INFINITY ) , NAN );
+
+    testDouble( MAXF(NAN, 7 ), NAN );
+    testDouble( MAXF(7, NAN ), NAN );
+    testDouble( MAXF(NAN, NAN ), NAN );
+    testDouble( MAXF(-INFINITY, NAN ), NAN );
+    testDouble( MAXF( INFINITY, NAN ), NAN );
+    testDouble( MAXF(NAN, -INFINITY ) , NAN );
+    testDouble( MAXF(NAN,  INFINITY ) , NAN );
+
 
 
 
@@ -147,8 +206,8 @@ int main() {
    
     printTestMsg("\nTesting approxEquals: ");
     testBool( approxEquals(2.0, 2.0), true );
-     testBool( approxEquals(2.0, 3.0), false );
-     testBool( approxEquals(2.0, 2.000000001), true );
+    testBool( approxEquals(2.0, 3.0), false );
+    testBool( approxEquals(2.0, 2.000000001), true );
     testBool( approxEquals(2.0, 2.0e128), false );
     testBool( approxEquals(2.0e128, 2.000000001e128), true );
     testBool( approxEquals(2.0, 2.1), false );
