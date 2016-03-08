@@ -71,7 +71,7 @@ int main () {
     test2();
     test3();
     test4();
-    printf("\n");
+    printTestSummary();
     return 0;
     }
 
