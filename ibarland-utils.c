@@ -215,14 +215,15 @@ bool approxEqualsUlps(double const x, double const y, unsigned long const maxUlp
     }
 
 // Are two doubles approximately-equal?  
-bool approxEqualsRel(double x, double y, double relativeTolerance) {
+bool approxEqualsRel(double x, double y, double relativeTolerance, double absoluteTolerance) {
     if (isnan(x) || isnan(y)) return false;
     if (isinfinite(x) && isinfinite(y)) return (sgn(x)==sgn(y));
-    
-    
-
+    if (isinfinite(x) || isinfinite(y)) return false;
+    if (fabs(y-x) <= absoluteTolerance) return true;
+    double const size = MAXF(fabs(x),fabs(y));
+    return fabs(x-y) <= size*relativeTolerance;
     }
 
 bool approxEquals(double const x, double const y) { 
-    return approxEqualsRel(x,y,0.00001);
+    return approxEqualsRel(x,y,0.00001, 1e-9);
     }

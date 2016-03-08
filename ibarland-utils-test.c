@@ -140,7 +140,7 @@ int main() {
     testLong( lmodPos(LONG_MIN, -2), 0 );
     testLong( lmodPos(LONG_MIN+1, -2), -1 );
     
-    printTestMsg( "\nTesting isinfinities, max, min.\n" );
+    printTestMsg( "\nTesting isinfinities, max, min: " );
     testBool( isinfinite(INFINITY), true );
     testBool( isinfinite(-INFINITY), true );
     testBool( isinfinite(NAN), false );
@@ -207,12 +207,16 @@ int main() {
     printTestMsg("\nTesting approxEquals: ");
     testBool( approxEquals(2.0, 2.0), true );
     testBool( approxEquals(2.0, 3.0), false );
-    testBool( approxEquals(2.0, 2.000000001), true );
+    testBool( approxEquals( 2.0,  2.000000001), true );
+    testBool( approxEquals(-2.0, -2.000000001), true );
     testBool( approxEquals(2.0, 2.0e128), false );
     testBool( approxEquals(2.0e128, 2.000000001e128), true );
     testBool( approxEquals(2.0, 2.1), false );
     testBool( approxEquals(2.0, 2.000000001), true );
-    testBool( approxEquals(-0.0000001,+0.0000001), true );
+    testBool( approxEquals(-2.0, +2.0), false );
+    testBool( approxEquals(-1e-10,+1e-10), true );
+    testBool( approxEquals(-1e+10,+1e+10), false );
+
 
     testBool( approxEquals( INFINITY, INFINITY), true );
     testBool( approxEquals( INFINITY,-INFINITY), false );
