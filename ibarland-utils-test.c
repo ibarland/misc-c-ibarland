@@ -40,6 +40,12 @@ int main() {
     //   it takes the positive and applies unary-minus, which may trigger implicit conversions (!) 
     stringOnHeap = longToString( LONG_MAX );   testStr(stringOnHeap,  "9223372036854775807" ); free(stringOnHeap);
     stringOnHeap = longToString( LONG_MIN );   testStr(stringOnHeap, "-9223372036854775808" ); free(stringOnHeap);
+    
+    
+    stringOnHeap = newStrCat("","");           testStr(stringOnHeap, "" );               free(stringOnHeap);
+    stringOnHeap = newStrCat("abc","");        testStr(stringOnHeap, "abc" );            free(stringOnHeap);
+    stringOnHeap = newStrCat("","def");        testStr(stringOnHeap, "def" );            free(stringOnHeap);
+    stringOnHeap = newStrCat("abc","def");     testStr(stringOnHeap, "abcdef" );         free(stringOnHeap);
 
     
     testBool( time_usec() > 1451606400L*1000000L, true );  // > 2016 AD

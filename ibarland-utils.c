@@ -160,6 +160,25 @@ char* longToString( long const n ) {
   return nAsStr;
   }
 
+/* Return a new string which is the two arguments concatenated.
+ * strA, strB should both be non-null.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* newStrCat( stringConst strA, stringConst strB ) {
+  if (strA==NULL && strB==NULL) { return NULL; }
+  else if (strA==NULL) { return strB; }
+  else if (strB==NULL) { return strA; }
+  else {
+    char* rslt = (char*) malloc( strlen(strA) + strlen(strB) + 1 );
+    rslt[0] = '\0';
+    strcat(rslt,strA);
+    strcat(rslt,strB);
+    return rslt;
+    }
+  }
+
+
+
 /* 'signum', the sign of a number (+1, 0, or -1).
  * For a templated C++ verison, see: http://stackoverflow.com/a/4609795/320830
  * or use a macro:   #define SGN(x)  (x)>0 ? 1 : ((x)<0 ? -1 : 0)
@@ -227,3 +246,4 @@ bool approxEqualsRel(double x, double y, double relativeTolerance, double absolu
 bool approxEquals(double const x, double const y) { 
     return approxEqualsRel(x,y,0.00001, 1e-9);
     }
+

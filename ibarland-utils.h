@@ -29,6 +29,7 @@
  *    time_usec
  *    intToString    (N.B. Caller must free the returned-string.)
  *    longToString   (N.B. Caller must free the returned-string.)
+ *    newStrCat      (N.B. Caller must free the returned-string.)
  *
  *    streq
  *    strdiff
@@ -156,6 +157,10 @@ char* intToString( int const n );
  */
 char* longToString( long const n );
 
-
+/* Return a new string which is the two arguments concatenated.
+ * strA, strB should both be non-null.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* newStrCat( stringConst strA, stringConst strB );
 
 #endif
