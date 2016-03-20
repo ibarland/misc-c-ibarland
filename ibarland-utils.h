@@ -42,6 +42,8 @@
  *    printTestMsg
  *    printTestSummary
  *    resetTestSummary
+ *
+ *    pid_t forkAndExec( stringConst cmd );
  */
 
 
@@ -162,5 +164,11 @@ char* longToString( long const n );
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
  */
 char* newStrCat( stringConst strA, stringConst strB );
+
+
+/* Fork and exec the indicated command; returns the fork'd child's ID.
+ * No arguments are provided to the exec'd process.
+ */
+pid_t forkAndExec( stringConst cmd );
 
 #endif

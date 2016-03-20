@@ -1,6 +1,8 @@
 /* See .h file for general-info. */
 
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
@@ -247,3 +249,21 @@ bool approxEquals(double const x, double const y) {
     return approxEqualsRel(x,y,0.00001, 1e-9);
     }
 
+
+pid_t forkAndExec( stringConst cmd ) {
+    pid_t proc;
+
+    proc = fork();
+    if (proc==0) { 
+        execl( cmd, cmd, NULL); 
+        fprintf( stdout, "%s: ", cmd );
+        perror("exec'ing failed"); 
+        exit(errno);
+        }
+    else if (proc < 1) {
+        fprintf(stderr, "forking %s failed.", cmd );
+        /* This function should really be provided a cleanup-callback, if doing this properly. */
+        exit(proc);
+        }
+    return proc;
+    }
