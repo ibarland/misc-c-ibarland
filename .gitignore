@@ -1,5 +1,5 @@
 # general backups
-*.~
+*~
 
 # java, and BlueJ
 *.class

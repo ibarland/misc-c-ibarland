@@ -9,8 +9,8 @@
  *   DPRINTF      (N.B. To enable debugging, `#define DEBUG` in a file BEFORE `#include`ing this .h.)
  *   SIZEOF_ARRAY (N.B. good only for local, stack-allocated arrays, not pointers)
  *   stringConst
- *   natNum
- *   lnatNum
+ *   nat
+ *   lnat
  *   MIN
  *   MAX
  *   MINF  // handle nan w/o a type-error
@@ -65,8 +65,8 @@
 #include <stdbool.h> // for testBool
 
 typedef char const * const   stringConst;
-typedef unsigned int         natNum;
-typedef unsigned long        lnatNum;
+typedef unsigned int         nat;
+typedef unsigned long        lnat;
 
 #define ALLOC(typ)               (typ *) (malloc(sizeof( typ )))
 #define ALLOC_ARRAY(n, typ)      (typ *) (calloc((unsigned) n, sizeof( typ )))  // N.B. calloc init's the memory to 0.
@@ -93,7 +93,7 @@ long lmodPos( long const n, long const b );
 
 /* a-b, with a floor of 0.  Helpful for both signed & unsigned arithmetic. */
 int monus( int a, int b );
-natNum monus_u( natNum a, natNum b );
+nat monus_u( nat a, nat b );
 
 
 extern double M_TAU;  // tau = 2*pi
@@ -134,7 +134,7 @@ bool print_on_test_success;
 void testStr( stringConst actual, stringConst expected ); // actual==expected==null passes.
 void testChar( char const actual, char const expected );
 void testInt( int const actual, int const expected );
-void testNatNum( natNum actual, natNum expected );
+void testNat( nat actual, nat expected );
 void testLong( long const actual, long const expected );
 void testDouble( double const actual, double const expected );
 void testBool( bool const actual, bool const expected );
@@ -147,7 +147,7 @@ void printTestSummary();
   
 
 /* Return the #microseconds since the standard epoch. */
-long time_usec();
+lnat time_usec();
 
 /* Return a string numeral, for the given int.
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.

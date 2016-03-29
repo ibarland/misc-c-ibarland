@@ -95,11 +95,11 @@ void testInt( int const actual, int const expected ) {
     else { printTestFailure(actual, expected, "%i", ""); }
     }
 
-/* Are two natNums (unsigned ints) the same?
+/* Are two nats (unsigned ints) the same?
  * If not, print an error message;
  * if so, and print_on_test_success, print a very-short indicator.
  */
-void testNatNum( natNum const actual, natNum const expected ) {
+void testNat( nat const actual, nat const expected ) {
     ++testCount;
     if (actual==expected) { printTestSuccess(); }
     else { printTestFailure(actual, expected, "%u", ""); }
@@ -128,10 +128,10 @@ void testBool( bool const actual, bool const expected ) {
 
 
 /* Return the #microseconds since the standard epoch. */
-long time_usec() {
+lnat time_usec() {
   struct timeval now;
   gettimeofday(&now,NULL);
-  return now.tv_sec*1000000L + now.tv_usec;
+  return (lnat) (now.tv_sec*1000000L + now.tv_usec);
   }
 
 /* Return a string numeral, for the given int.
@@ -142,7 +142,7 @@ char* intToString( int const n ) {
   // We could allocate enough space based on sizeof(int):   ((int)ceil(8*sizeof(int) * log10(2))   digits
   // But hey, we might as well allocate just the right amount:    ceil(log10(n))
   int nSameDigits = (n==0) ? 1 : (abs(n) < 0 ? abs(n+1) : abs(n)); // A version of n that has the same #digits.
-  natNum numDigits = (natNum)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
+  nat numDigits = (nat)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
   char* nAsStr = (char*) malloc( (numDigits+1+1) * sizeof(char) ); // +1 for sign, +1 for terminating null.
   sprintf( nAsStr, "%i", n );
   return nAsStr;
@@ -156,7 +156,7 @@ char* longToString( long const n ) {
   // We could allocate enough space based on sizeof(long):   ((int)ceil(8*sizeof(long) * log10(2))   digits
   // But hey, we might as well allocate just the right amount:    ceil(log10(n))
   long nSameDigits = (n==0) ? 1 : (labs(n) < 0 ? labs(n+1) : labs(n)); // A version of n that has the same #digits.
-  natNum numDigits = (natNum)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
+  nat numDigits = (nat)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
   char* nAsStr = (char*) malloc( (numDigits+1+1) * sizeof(char) ); // +1 for sign, +1 for terminating null.
   sprintf( nAsStr, "%ld", n );
   return nAsStr;
@@ -189,9 +189,9 @@ char* newStrCat( stringConst strA, stringConst strB ) {
 float sgn( long double const x ) { return isnan(x) ? NAN : ((x > 0) ? 1.0 : ((x < 0) ? -1.0 : 0.0)); }
 
 /* a-b, with a floor of 0.  Helpful for unsgiend arithmetic. */
-// Should make this int,int -> natNum ?   ->int?
+// Should make this int,int -> nat ?   ->int?
 int monus( int const a, int const b ) { return a>=b ? a-b : 0; }
-natNum monus_u( natNum const a, natNum const b ) { return a>=b ? a-b : 0; }
+nat monus_u( nat const a, nat const b ) { return a>=b ? a-b : 0; }
 
 double M_TAU = 2* M_PI; // hmm, misleading to name it "M_", since it's not actually in math.h?
 double degToRad(double const theta) { return theta/360 * M_TAU; }
@@ -202,7 +202,7 @@ double radToDeg(double const theta) { return theta/M_TAU * 360; }
 int modPos( int const n, int const b ) {
   return (sgn(n%b) != -sgn(b)) ? n%b : (n%b + b);
   }
-long lmodPos( long const n, long const b ) {
+long lmodPos( long int const n, long int const b ) {
   return (sgn(n%b) != -sgn(b)) ? n%b : n%b + b;
   }
 
@@ -217,7 +217,7 @@ bool isinfinite( double x ) {
 //
 // Tolerance is, crudely: within 1 in 1,000,000  (2^24 ulps / 10)
 //
-bool approxEqualsUlps(double const x, double const y, unsigned long const maxUlps) {
+bool approxEqualsUlps(double const x, double const y, lnat const maxUlps) {
     assert(sizeof(double)==sizeof(long int));
     if (isnan(x) || isnan(y)) return false;
     // Make sure maxUlps is non-negative and small enough that the
@@ -232,7 +232,7 @@ bool approxEqualsUlps(double const x, double const y, unsigned long const maxUlp
     long int const xLongPos = labs(xLong);
     long int const yLongPos = labs(yLong);
     DPRINTF( "x,y as complemented ints: %i,%i.\n", xIntPos, yIntPos );
-    return (((unsigned long int) labs(xLongPos - yLongPos)) <= maxUlps);
+    return (((lnat) labs(xLongPos - yLongPos)) <= maxUlps);
     }
 
 // Are two doubles approximately-equal?  

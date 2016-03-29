@@ -47,8 +47,8 @@ char extractShortOptionName( stringConst arg ) {
  */
 char* findOption( struct option_info target, int n, char* const haystack[] ) {
     char * answerSoFar = target.defaultValue;
-    natNum i;
-    for (i=0;  i < monus_u((natNum)n,1u);  i += 1) {
+    nat i;
+    for (i=0;  i < monus_u((nat)n,1u);  i += 1) {
         if (streq(haystack[i],"--")) break;  /* "--" stops option-processing */
         stringConst asLongOption  = extractLongOptionName( haystack[i]);
         char  asShortOption = extractShortOptionName(haystack[i]);
@@ -70,8 +70,8 @@ bool apparentOptionIsLegal( int numOptions, struct option_info options[], char* 
     if (asLongOption==NULL && asShortOption=='\0') return true; 
     /* Doesn't look like it's trying to be an option, so no problem. */
     
-    natNum i;
-    for (i=0;  i<(natNum)numOptions;  ++i) {
+    nat i;
+    for (i=0;  i<(nat)numOptions;  ++i) {
         if (asLongOption!=NULL) {
             if (streq(asLongOption,options[i].longOption)) return true;
             }
@@ -97,10 +97,10 @@ bool apparentOptionIsLegal( int numOptions, struct option_info options[], char* 
  * then we'd return {"foo.txt", "ibarland", "27"}.
  */
 char** allOptions( int argc, char* argv[], int numOptions, struct option_info options[] ) {
-    natNum numOptions_u = (natNum) numOptions;
-    natNum argc_u = (natNum) argc;
+    nat numOptions_u = (nat) numOptions;
+    nat argc_u = (nat) argc;
     char** const allOpts = (char**) malloc( numOptions_u * sizeof(char*) );
-    natNum i;
+    nat i;
     for (i=0;  i<numOptions_u;  ++i) {
         allOpts[i] = findOption( options[i], argc, argv );
         }

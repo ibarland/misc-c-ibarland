@@ -81,4 +81,3 @@ command-line-options.o: command-line-options.c command-line-options.h ibarland-u
 
 command-line-options-test: command-line-options.c command-line-options.h ibarland-utils.o
 	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o -lm
-
