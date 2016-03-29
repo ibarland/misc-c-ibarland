@@ -111,6 +111,10 @@ char** allOptions( int argc, char* argv[], int numOptions, struct option_info op
         if (!apparentOptionIsLegal(numOptions, options, argv[i])) {
             fprintf(stderr,"Warning: argument #%d, \"%s\", is not a known option.\n", i, argv[i]);
             }
+         else if (i==argc_u-1 && argv[i][0]=='-' && strlen(argv[i])>1) {
+            fprintf(stderr,"Warning: last argument, #%d, \"%s\", has no provided value.\n", i, argv[i]);
+            fprintf(stderr,"(Such args are not yet supported in ibarland's command-line-options, sorry.)\n" );
+            }
         }
   
     return allOpts;
