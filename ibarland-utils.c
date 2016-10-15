@@ -80,7 +80,7 @@ void testChar( char const actual, char const expected ) {
  */
 void testDouble( double const actual, double const expected ) {
     ++testCount;
-    if (actual==expected || (isnan(actual) && isnan(expected))) { printTestSuccess(); }
+    if (approxEquals(actual,expected) || (isnan(actual) && isnan(expected))) { printTestSuccess(); }
     else { printTestFailure(actual, expected, "%lf", ""); }
     }
 

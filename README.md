@@ -1,4 +1,4 @@
-# misc-c-ibarland
+github.com/ibarland/misc-c-ibarland
 helper library functions for C/C++ programs
 
 ibarland-utils: very general helper functions -- e.g. convert degrees to radians, `itoa` which allocates necessary space, etc.

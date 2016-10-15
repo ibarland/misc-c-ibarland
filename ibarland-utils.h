@@ -9,8 +9,16 @@
  *   DPRINTF      (N.B. To enable debugging, `#define DEBUG` in a file BEFORE `#include`ing this .h.)
  *   SIZEOF_ARRAY (N.B. good only for local, stack-allocated arrays, not pointers)
  *   stringConst
- *   nat
- *   lnat
+ *   nat  // TODO: remove; use uint -- more C-ish
+ *   lnat // TODO: remove; use ulong
+ *    byte
+ *   ubyte
+ *   uchar
+ *   ushort
+ *   uint
+ *   ulong
+ *   ulonglong
+
  *   MIN
  *   MAX
  *   MINF  // handle nan w/o a type-error
@@ -65,8 +73,17 @@
 #include <stdbool.h> // for testBool
 
 typedef char const * const   stringConst;
-typedef unsigned int         nat;
-typedef unsigned long        lnat;
+typedef unsigned int         nat;  // TODO: deprecate; use `uint` as a more idiomatic C-ish name
+typedef unsigned long        lnat; // TODO: deprecate   
+
+typedef   signed char         byte;
+typedef unsigned char        ubyte;
+typedef unsigned char        uchar;
+typedef unsigned short       ushort;
+typedef unsigned int         uint;
+typedef unsigned long        ulong;
+typedef unsigned long long   ulonglong;
+
 
 #define ALLOC(typ)               (typ *) (malloc(sizeof( typ )))
 #define ALLOC_ARRAY(n, typ)      (typ *) (calloc((unsigned) n, sizeof( typ )))  // N.B. calloc init's the memory to 0.
