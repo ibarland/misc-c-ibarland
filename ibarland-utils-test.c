@@ -79,13 +79,13 @@ int main() {
     testInt( monus(1,0), 1 );
     testInt( monus(1,1), 0 );
 
-    testNat( monus_u(7u,3u), 4u );
-    testNat( monus_u(3u,7u), 0u );
-    testNat( monus_u(7u,7u), 0u );
-    testNat( monus_u(0u,0u), 0u );
-    testNat( monus_u(0u,1u), 0u );
-    testNat( monus_u(1u,0u), 1u );
-    testNat( monus_u(1u,1u), 0u );
+    testUInt( monus_u(7u,3u), 4u );
+    testUInt( monus_u(3u,7u), 0u );
+    testUInt( monus_u(7u,7u), 0u );
+    testUInt( monus_u(0u,0u), 0u );
+    testUInt( monus_u(0u,1u), 0u );
+    testUInt( monus_u(1u,0u), 1u );
+    testUInt( monus_u(1u,1u), 0u );
 
 
     testInt( modPos(0,3), 0 );
