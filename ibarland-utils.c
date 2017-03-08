@@ -334,3 +334,23 @@ void swap_l SWAP_BODY(long)
 void swap_ul SWAP_BODY(ulong)
 void swap_f SWAP_BODY(float)
 void swap_d SWAP_BODY(double)
+
+
+
+int* newArrayI_uninit( uint sz ) {
+    assert(sz>0);
+    int* arr = malloc(sz*sizeof(int));
+    assert (arr!=NULL);
+    return arr;
+    }
+int* fillArrayI( int* arr, uint sz, int val ) { 
+    for (uint i=0;  i<sz;  ++i) { arr[i] = val; } 
+    return arr;
+    }
+int* fillArrayI_rand( int* arr, uint sz, int lo, int hi ) { 
+    for (uint i=0;  i<sz;  ++i) { arr[i] = lo + random()%(hi-lo); } 
+    return arr;
+    }
+int* newArrayI( uint sz, int val ) { return fillArrayI(newArrayI_uninit(sz), sz, val); }
+int* newArrayI_rand( uint sz, int lo, int hi ) { return fillArrayI_rand(newArrayI_uninit(sz), sz, lo, hi); }
+

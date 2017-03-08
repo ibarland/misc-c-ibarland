@@ -78,6 +78,8 @@
 #define IBARLAND_UTILS_H
 
 #include <stdbool.h> // for testBool
+#include <unistd.h> // for pid_t
+#include <stdio.h>  // for fprintf
 
 typedef char const * const   stringConst;
 
@@ -164,6 +166,58 @@ stringConst sprintf_arrli( long int* arr, int sz,
                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
 stringConst sprintf_arrlf( double* arr, int sz,
                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+
+
+/** Return an array of `sz` ints (sz>0), uninitialized.
+ * It is the responsibility of the caller to free this memory.
+ */
+int* newArrayI_uninit( uint sz );
+
+
+/** Return an array of `sz` ints (sz>0), initialized to `val`. 
+ * It is the responsibility of the caller to free this memory.
+ */
+int* newArrayI( uint sz, int val );
+
+/** Return an array of `sz` ints (sz>0), initialized with random values in [lo,hi), where hi>lo.
+ * It is the responsibility of the caller to free this memory.
+ * Result depends on, and changes, the state of `random`.
+ */
+int* newArrayI_rand( uint sz, int lo, int hi );
+
+
+/* Fill arr[0,sz) with `val`.  Returns `arr` as a convenience. */
+int* fillArrayI( int* arr, uint sz, int val );
+
+
+/* Fill arr[0,sz) with values random from [lo,hi).
+ * Returns `arr`, as a convenience.
+ * Result depends on, and changes, the state of `random`.
+ */
+int* fillArrayI_rand( int* arr, uint sz, int lo, int hi );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Use 'DPRINTF' for debug printing: */

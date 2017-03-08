@@ -267,6 +267,36 @@ int main() {
              "[+03.1,+00.0,-02.7]" );
     testStr( sprintf_arrc("hello", 3, "", "%c", "", ""),
              "hel" );
+  
+    
+    printTestMsg("\nTesting array init/fill");
+    const int SZ1 = 8;
+    int* numsOnHeap = newArrayI_uninit(SZ1);
+    int numsOnStack[] = { 3, 17, 9, -2, 0, 99, 3, 128 };
+
+    fillArrayI( numsOnHeap, SZ1, 99 );
+    fillArrayI( numsOnStack, SZ1, 99 );
+    for (int i=0;  i<SZ1;  ++i) {
+        testInt(numsOnHeap[i], 99);
+        testInt(numsOnStack[i], 99);
+        }
+    fillArrayI_rand( numsOnHeap, SZ1, 100,102 );
+    fillArrayI_rand( numsOnStack, SZ1, 100,102 );
+    bool found100_stack = false, found101_stack = false;
+    bool found100_heap  = false, found101_heap  = false;
+    for (int i=0;  i<SZ1;  ++i) {
+        found100_stack = found100_stack || (numsOnStack[i]==100);
+        found100_heap  = found100_heap  || (numsOnHeap [i]==100);
+        found101_stack = found101_stack || (numsOnStack[i]==101);
+        found101_heap  = found101_heap  || (numsOnHeap [i]==101);
+        testBool(100 <= numsOnHeap[i]  && numsOnHeap[i]  < 102, true);
+        testBool(100 <= numsOnStack[i] && numsOnStack[i] < 102, true);
+        }
+    testBool(found100_stack && found101_stack, true);
+    testBool(found100_heap  && found101_heap , true);
+    free(numsOnHeap);
+    
+    
     
     printTestMsg("\nTesting swap: ");
     int i=5;
@@ -278,6 +308,10 @@ int main() {
     swap_i(&j, &arr6i[3]);
     testInt(j,20);
     testInt(arr6i[3],5);
+
+    
+    
+    
     
     
     printTestSummary();
