@@ -270,7 +270,7 @@ int main() {
   
     
     printTestMsg("\nTesting array init/fill");
-    const int SZ1 = 8;
+    const uint SZ1 = 8;
     int* numsOnHeap = newArrayI_uninit(SZ1);
     int numsOnStack[] = { 3, 17, 9, -2, 0, 99, 3, 128 };
 

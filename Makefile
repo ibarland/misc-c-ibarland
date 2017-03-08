@@ -11,10 +11,11 @@
 # command-line args for C:
 #
 CC       = gcc
-CFLAGS   = -g \
+CFLAGS   = -O3 -g \
            -Wall -Wextra \
            -Wpointer-arith -Wcast-qual -Wcast-align \
-           -Wwrite-strings -Wconversion -Wno-incompatible-pointer-types-discards-qualifiers \
+           -Wwrite-strings -Wconversion \
+#          -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
 	   -Woverloaded-virtual
 #
 # don't include:
