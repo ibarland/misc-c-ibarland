@@ -80,7 +80,7 @@ void testChar( char const actual, char const expected ) {
  */
 void testDouble( double const actual, double const expected ) {
     ++testCount;
-    if (actual==expected || (isnan(actual) && isnan(expected))) { printTestSuccess(); }
+    if (approxEquals(actual,expected) || (isnan(actual) && isnan(expected))) { printTestSuccess(); }
     else { printTestFailure(actual, expected, "%lf", ""); }
     }
 
@@ -267,3 +267,55 @@ pid_t forkAndExec( stringConst cmd ) {
         }
     return proc;
     }
+
+
+
+
+/* Return a string representation of an array, arr[0]..arr[sz-1].
+ * arr -- the beginning of the array
+ * sz -- the number of elements of the array
+ * open -- a string to start the array with.  If NULL, `"["` is used.
+ * formatSpec -- the printf-style format string to use for a single element.
+ * between -- a printf-compatible string for putting between each element (not after the last).  If NULL, `","` is used.
+ * close -- a string to start the array with.  If NULL, `"]"` is used.
+ *
+ * The result will be a string of length: strlen(open) + (n-1)*strlen(between) + strlen(close)
+ *   plus the characters needed for the actual data (which depends on the data and the formatSpec).
+ * BUG: If an individual element needs more then MAX_ELT_LEN characters, it gets truncated.
+ */
+#define MAX_ELT_LEN  1024
+static char* _nextElt = NULL;
+
+#define MAKE_SPRINTF_ARR_FUNC_BODY(typ,defaultFormatSpec) \
+( typ* arr, int sz, \
+  stringConst _open, stringConst _formatSpec, stringConst _between, stringConst _close ) { \
+    if (_nextElt == NULL) _nextElt = (char*)malloc(MAX_ELT_LEN);  /* one-time static init */ \
+    stringConst open       = (_open      ==NULL  ?  "["   :  _open      ); \
+    stringConst formatSpec = (_formatSpec==NULL  ?  defaultFormatSpec  :  _formatSpec); \
+    stringConst between    = (_between   ==NULL  ?  ","   :  _between   ); \
+    stringConst close      = (_close     ==NULL  ?  "]"   :  _close     ); \
+ \
+    char const * ssf = (open==NULL  ?  "["  :  open); \
+    for (int i=0;  i<sz;  ++i) { \
+        snprintf(_nextElt, MAX_ELT_LEN, formatSpec, arr[i]); \
+        ssf = newStrCat(ssf,_nextElt); \
+        if (i+1 != sz) ssf = newStrCat(ssf, (between==NULL  ?  ","  :  between)); \
+        } \
+    ssf = newStrCat(ssf, (close==NULL  ?  "]"  :  close)); \
+    return ssf; \
+    }
+
+stringConst sprintf_arrb  MAKE_SPRINTF_ARR_FUNC_BODY(bool,"%i")
+stringConst sprintf_arrc  MAKE_SPRINTF_ARR_FUNC_BODY(char,"%c")
+stringConst sprintf_arri  MAKE_SPRINTF_ARR_FUNC_BODY(int,"%i")
+stringConst sprintf_arrf  MAKE_SPRINTF_ARR_FUNC_BODY(float,"%f")
+stringConst sprintf_arrli MAKE_SPRINTF_ARR_FUNC_BODY(long int,"%li")
+stringConst sprintf_arrlf MAKE_SPRINTF_ARR_FUNC_BODY(double,"%lf")
+
+/* N.B. I tried making a generic verion of the above, passing in
+ * sizeOfElement -- the sizeof a single array-element (e.g., pass in sizeof(long))
+ * but this doesn't work because when dereferencing, 'void*' isn't allowed (nor would
+ * it work with sizeofElt < sizeof(void*)), so I cast arr to a char*.
+ * But then when printf is given a value, it used only the first byte.
+ */
+

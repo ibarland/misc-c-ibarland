@@ -244,6 +244,30 @@ int main() {
     testBool( approxEquals(INFINITY, NAN), false );
     testBool( approxEquals(NAN, INFINITY), false );
 
+    printTestMsg("\nTesting sprintf_array: ");
+    int* arr5i = malloc(5*sizeof(int));
+    arr5i[0] = 7;
+    arr5i[1] = 22;
+    arr5i[2] = -307;
+    arr5i[3] = INT_MAX;
+    arr5i[4] = INT_MIN;
+    testStr( sprintf_arri(arr5i, 5, "<", "%d", " : ", ">"),
+             "<7 : 22 : -307 : 2147483647 : -2147483648>" );
+    int* arr6i = malloc(6*sizeof(int));
+    arr6i[0] = 7;
+    arr6i[1] = 22;
+    arr6i[2] = -307;
+    arr6i[3] = 20;
+    arr6i[4] = 777777;
+    arr6i[5] = 777777;
+    testStr( sprintf_arri(arr6i, 6, "<", NULL, " : ", ">"),
+             "<7 : 22 : -307 : 20 : 777777 : 777777>" );
+    double arr3d[] = { 3.14159, 0.0, -2.718281828 };
+    testStr( sprintf_arrlf(arr3d, 3, NULL, "%+05.1lf", NULL, NULL),
+             "[+03.1,+00.0,-02.7]" );
+    testStr( sprintf_arrc("hello", 3, "", "%c", "", ""),
+             "hel" );
+    
     
     printTestSummary();
     return 0;

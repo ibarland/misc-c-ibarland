@@ -9,8 +9,16 @@
  *   DPRINTF      (N.B. To enable debugging, `#define DEBUG` in a file BEFORE `#include`ing this .h.)
  *   SIZEOF_ARRAY (N.B. good only for local, stack-allocated arrays, not pointers)
  *   stringConst
- *   nat
- *   lnat
+ *   nat  // TODO: remove; use uint -- more C-ish
+ *   lnat // TODO: remove; use ulong
+ *    byte
+ *   ubyte
+ *   uchar
+ *   ushort
+ *   uint
+ *   ulong
+ *   ulonglong
+
  *   MIN
  *   MAX
  *   MINF  // handle nan w/o a type-error
@@ -34,6 +42,13 @@
  *    streq
  *    strdiff
  *    strempty
+ *
+ *    sprintf_arrb
+ *    sprintf_arrc
+ *    sprintf_arri
+ *    sprintf_arrf
+ *    sprintf_arrli
+ *    sprintf_arrlf
  *    
  *    testStr
  *    testChar
@@ -65,8 +80,17 @@
 #include <stdbool.h> // for testBool
 
 typedef char const * const   stringConst;
-typedef unsigned int         nat;
-typedef unsigned long        lnat;
+typedef unsigned int         nat;  // TODO: deprecate; use `uint` as a more idiomatic C-ish name
+typedef unsigned long        lnat; // TODO: deprecate   
+
+typedef   signed char         byte;
+typedef unsigned char        ubyte;
+typedef unsigned char        uchar;
+typedef unsigned short       ushort;
+typedef unsigned int         uint;
+typedef unsigned long        ulong;
+typedef unsigned long long   ulonglong;
+
 
 #define ALLOC(typ)               (typ *) (malloc(sizeof( typ )))
 #define ALLOC_ARRAY(n, typ)      (typ *) (calloc((unsigned) n, sizeof( typ )))  // N.B. calloc init's the memory to 0.
@@ -108,6 +132,31 @@ bool strdiff( stringConst s1, stringConst s2 );
 // Note that we use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
 bool strempty( stringConst s );
 
+
+
+/* Return a string representation of an array, arr[0]..arr[sz-1].
+ * arr -- the beginning of the array
+ * sz -- the number of elements of the array
+ * open -- a string to start the array with.  If NULL, `"["` is used.
+ * formatSpec -- the printf-style format string to use for a single element. 
+ *               If NULL, use the appropriate default %i or %li or ... .
+ * between -- a printf-compatible string for putting between each element (not after the last).  If NULL, `","` is used.
+ * close -- a string to start the array with.  If NULL, `"]"` is used.
+ *
+ * The result will be a string of length: strlen(open) + (n-1)*strlen(interpserse)
+ */
+stringConst sprintf_arrb(  bool* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst sprintf_arrc(  char* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst sprintf_arri(  int* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst sprintf_arrf(  float* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst sprintf_arrli( long int* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst sprintf_arrlf( double* arr, int sz,
+                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
 
 
 /* Use 'DPRINTF' for debug printing: */
