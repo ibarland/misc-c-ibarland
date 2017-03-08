@@ -286,7 +286,7 @@ pid_t forkAndExec( stringConst cmd ) {
 #define MAX_ELT_LEN  1024
 static char* _nextElt = NULL;
 
-#define MAKE_SPRINTF_ARR_FUNC_BODY(typ,defaultFormatSpec) \
+#define MAKE_SPRINTF_ARR_FUNC_BODY(typ,defaultFormatSpec)\
 ( typ* arr, int sz, \
   stringConst _open, stringConst _formatSpec, stringConst _between, stringConst _close ) { \
     if (_nextElt == NULL) _nextElt = (char*)malloc(MAX_ELT_LEN);  /* one-time static init */ \
@@ -319,3 +319,18 @@ stringConst sprintf_arrlf MAKE_SPRINTF_ARR_FUNC_BODY(double,"%lf")
  * But then when printf is given a value, it used only the first byte.
  */
 
+#define SWAP_BODY(typ)\
+( typ *a, typ *b ) { \
+    typ tmp = *a; \
+    *a = *b; \
+    *b = tmp; \
+    }
+
+void swap_b SWAP_BODY(bool)
+void swap_c SWAP_BODY(char)
+void swap_i SWAP_BODY(int)
+void swap_u SWAP_BODY(uint)
+void swap_l SWAP_BODY(long)
+void swap_ul SWAP_BODY(ulong)
+void swap_f SWAP_BODY(float)
+void swap_d SWAP_BODY(double)

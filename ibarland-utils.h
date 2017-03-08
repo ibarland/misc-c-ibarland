@@ -19,10 +19,11 @@
  *   ulong
  *   ulonglong
 
- *   MIN
+ *   MIN   // macros for computing the min,max
  *   MAX
  *   MINF  // handle nan w/o a type-error
  *   MAXF  
+ *   swap
  *   
  * Functions/constants provided:
  *    sgn
@@ -107,6 +108,15 @@ typedef unsigned long long   ulonglong;
 #define MAX(X,Y)  (((X) >= (Y)) ? (X) : (Y))
 #define MINF(X,Y)  (((X) <= (Y)) ? (X) : (isnan(X) ? NAN : Y))
 #define MAXF(X,Y)  (((X) >= (Y)) ? (X) : (isnan(X) ? NAN : Y))
+
+void swap_b(  bool  *a, bool   *b );
+void swap_c(  char  *a, char   *b );
+void swap_i(  int   *a, int    *b );
+void swap_u(  uint  *a, uint   *b );
+void swap_l(  long  *a, long   *b );
+void swap_ul( ulong *a, ulong  *b );
+void swap_f( float  *a, float  *b );
+void swap_d( double *a, double *b );
 
 /* 'signum', the sign of a number (+1, 0, or -1). */
 float sgn( long double const x );

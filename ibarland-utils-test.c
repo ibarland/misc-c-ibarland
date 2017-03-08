@@ -268,6 +268,17 @@ int main() {
     testStr( sprintf_arrc("hello", 3, "", "%c", "", ""),
              "hel" );
     
+    printTestMsg("\nTesting swap: ");
+    int i=5;
+    int j=7;
+    swap_i(&i,&j);
+    testInt(i,7);
+    testInt(j,5);
+
+    swap_i(&j, &arr6i[3]);
+    testInt(j,20);
+    testInt(arr6i[3],5);
+    
     
     printTestSummary();
     return 0;
