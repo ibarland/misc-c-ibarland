@@ -305,12 +305,12 @@ static char* _nextElt = NULL;
     return ssf; \
     }
 
-stringConst sprintf_arrb  MAKE_SPRINTF_ARR_FUNC_BODY(bool,"%i")
-stringConst sprintf_arrc  MAKE_SPRINTF_ARR_FUNC_BODY(char,"%c")
-stringConst sprintf_arri  MAKE_SPRINTF_ARR_FUNC_BODY(int,"%i")
-stringConst sprintf_arrf  MAKE_SPRINTF_ARR_FUNC_BODY(float,"%f")
-stringConst sprintf_arrli MAKE_SPRINTF_ARR_FUNC_BODY(long int,"%li")
-stringConst sprintf_arrlf MAKE_SPRINTF_ARR_FUNC_BODY(double,"%lf")
+stringConst arrB_toString MAKE_SPRINTF_ARR_FUNC_BODY(bool,"%i")
+stringConst arrC_toString  MAKE_SPRINTF_ARR_FUNC_BODY(char,"%c")
+stringConst arrI_toString  MAKE_SPRINTF_ARR_FUNC_BODY(int,"%i")
+stringConst arrF_toString  MAKE_SPRINTF_ARR_FUNC_BODY(float,"%f")
+stringConst arrLi_toString MAKE_SPRINTF_ARR_FUNC_BODY(long int,"%li")
+stringConst arrLf_toString MAKE_SPRINTF_ARR_FUNC_BODY(double,"%lf")
 
 /* N.B. I tried making a generic verion of the above, passing in
  * sizeOfElement -- the sizeof a single array-element (e.g., pass in sizeof(long))

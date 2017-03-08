@@ -43,12 +43,12 @@
  *    strdiff
  *    strempty
  *
- *    sprintf_arrb
- *    sprintf_arrc
- *    sprintf_arri
- *    sprintf_arrf
- *    sprintf_arrli
- *    sprintf_arrlf
+ *    arrB_toString
+ *    arrC_toString
+ *    arrI_toString
+ *    arrF_toString
+ *    arrLi_toString
+ *    arrLf_toString
  *    
  *    testStr
  *    testChar
@@ -154,18 +154,18 @@ bool strempty( stringConst s );
  *
  * The result will be a string of length: strlen(open) + (n-1)*strlen(interpserse)
  */
-stringConst sprintf_arrb(  bool* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst sprintf_arrc(  char* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst sprintf_arri(  int* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst sprintf_arrf(  float* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst sprintf_arrli( long int* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst sprintf_arrlf( double* arr, int sz,
-                           stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrB_toString(  bool* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrC_toString(  char* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrI_toString(  int* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrF_toString(  float* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrLi_toString( long int* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
+stringConst arrLf_toString( double* arr, int sz,
+                            stringConst open, stringConst formatSpec, stringConst between, stringConst close );
 
 
 /** Return an array of `sz` ints (sz>0), uninitialized.
