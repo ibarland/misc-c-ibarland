@@ -26,9 +26,9 @@ CFLAGS   = -g \
 #
 
 
-CPPFLAGS = -I$(home)/lib
-LDLIBS   = -lm
-#STDHEADERS  = $(home)/lib/macros.h
+CPPFLAGS = -I$(HOME)/Src
+LDLIBS   = -L$(HOME)/Src -lm -lrt
+// NOTE: remove `-lrt` if it's causing problems; some older versions of gcc don't like that flag.
 
 
 # command-line args for C++
