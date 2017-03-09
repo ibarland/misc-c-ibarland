@@ -276,7 +276,7 @@ int main() {
 
     fillArrayI( numsOnHeap, SZ1, 99 );
     fillArrayI( numsOnStack, SZ1, 99 );
-    for (int i=0;  i<SZ1;  ++i) {
+    for (uint i=0;  i<SZ1;  ++i) {
         testInt(numsOnHeap[i], 99);
         testInt(numsOnStack[i], 99);
         }
@@ -284,7 +284,7 @@ int main() {
     fillArrayI_rand( numsOnStack, SZ1, 100,102 );
     bool found100_stack = false, found101_stack = false;
     bool found100_heap  = false, found101_heap  = false;
-    for (int i=0;  i<SZ1;  ++i) {
+    for (uint i=0;  i<SZ1;  ++i) {
         found100_stack = found100_stack || (numsOnStack[i]==100);
         found100_heap  = found100_heap  || (numsOnHeap [i]==100);
         found101_stack = found101_stack || (numsOnStack[i]==101);

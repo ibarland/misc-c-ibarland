@@ -154,17 +154,17 @@ bool strempty( stringConst s );
  *
  * The result will be a string of length: strlen(open) + (n-1)*strlen(interpserse)
  */
-stringConst arrB_toString(  bool* arr, int sz,
+stringConst arrB_toString(  const bool* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst arrC_toString(  char* arr, int sz,
+stringConst arrC_toString(  const char* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst arrI_toString(  int* arr, int sz,
+stringConst arrI_toString(  const int* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst arrF_toString(  float* arr, int sz,
+stringConst arrF_toString(  const float* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst arrLi_toString( long int* arr, int sz,
+stringConst arrLi_toString( const long int* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
-stringConst arrLf_toString( double* arr, int sz,
+stringConst arrLf_toString( const double* const arr, const int sz,
                             stringConst open, stringConst formatSpec, stringConst between, stringConst close );
 
 

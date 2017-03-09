@@ -287,7 +287,7 @@ pid_t forkAndExec( stringConst cmd ) {
 static char* _nextElt = NULL;
 
 #define MAKE_SPRINTF_ARR_FUNC_BODY(typ,defaultFormatSpec)\
-( typ* arr, int sz, \
+( const typ* const arr, const int sz, \
   stringConst _open, stringConst _formatSpec, stringConst _between, stringConst _close ) { \
     if (_nextElt == NULL) _nextElt = (char*)malloc(MAX_ELT_LEN);  /* one-time static init */ \
     stringConst open       = (_open      ==NULL  ?  "["   :  _open      ); \
@@ -320,7 +320,7 @@ stringConst arrLf_toString MAKE_SPRINTF_ARR_FUNC_BODY(double,"%lf")
  */
 
 #define SWAP_BODY(typ)\
-( typ *a, typ *b ) { \
+( typ * a, typ * b ) { \
     typ tmp = *a; \
     *a = *b; \
     *b = tmp; \
