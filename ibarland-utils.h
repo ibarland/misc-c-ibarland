@@ -22,7 +22,17 @@
  *   MAX
  *   MINF  // handle nan w/o a type-error
  *   MAXF  
- *   swap
+ *   swap_b
+ *   swap_c
+ *   swap_u
+ *   swap_i
+ *   swap_ul
+ *   swap_l
+ *   swap_f
+ *   swap_d
+ *
+ *   strtou_or_die
+ *   strtoi_or_die
  *   
  * Functions/constants provided:
  *    sgn
@@ -34,14 +44,15 @@
  *    isinfinite
  *    approxEquals
  * 
- *    time_usec
- *    intToString    (N.B. Caller must free the returned-string.)
- *    longToString   (N.B. Caller must free the returned-string.)
- *    newStrCat      (N.B. Caller must free the returned-string.)
- *
  *    streq
  *    strdiff
  *    strempty
+ *    newStrCat      (N.B. Caller must free the returned-string.)
+ *    intToString    (N.B. Caller must free the returned-string.)
+ *    uintToString   (N.B. Caller must free the returned-string.)
+ *    longToString   (N.B. Caller must free the returned-string.)
+ *    
+ *    time_usec
  *
  *    arrB_toString
  *    arrC_toString
@@ -52,6 +63,7 @@
  *    
  *    testStr
  *    testChar
+ *    testUInt
  *    testInt
  *    testBool
  *    printTestMsg
@@ -117,6 +129,16 @@ void swap_ul(  ulong *a, ulong  *b );
 void swap_f ( float  *a, float  *b );
 void swap_d ( double *a, double *b );
 
+
+/* Convert a string to a uint.  Exit if string isn't a valid uint, with `valRepresents` used in the error message. 
+ * Exit with the EINVAL or ERANGE.
+ */
+uint strtou_or_die( stringConst valAsStr, stringConst valRepresents );
+/* Convert a string to an int.  Exit if string isn't a valid int, with `valRepresents` used in the error message. 
+ * Exit with the EINVAL or ERANGE.
+ */
+int strtoi_or_die( stringConst valAsStr, stringConst valRepresents );
+
 /* 'signum', the sign of a number (+1, 0, or -1). */
 float sgn( long double const x );
 
@@ -140,6 +162,26 @@ bool streq( stringConst s1, stringConst s2 );
 bool strdiff( stringConst s1, stringConst s2 );
 // Note that we use the name 'strdiff' rather than 'strneq', since that's ambiguous with 'streq up to n chars'.
 bool strempty( stringConst s );
+
+/* Return a new string which is the two arguments concatenated.
+ * strA, strB should both be non-null.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* newStrCat( stringConst strA, stringConst strB );
+
+/* Return a string numeral, for the given int.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* intToString(   int const n );
+/* Return a string numeral, for the given uint.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* uintToString( uint const n );
+
+/* Return a string numeral, for the given long.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* longToString( long const n );
 
 
 
@@ -259,21 +301,6 @@ void printTestSummary();
 /* Return the #microseconds since the standard epoch. */
 ulong time_usec();
 
-/* Return a string numeral, for the given int.
- * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
- */
-char* intToString( int const n );
-
-/* Return a string numeral, for the given long.
- * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
- */
-char* longToString( long const n );
-
-/* Return a new string which is the two arguments concatenated.
- * strA, strB should both be non-null.
- * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
- */
-char* newStrCat( stringConst strA, stringConst strB );
 
 
 /* Fork and exec the indicated command; returns the fork'd child's ID.

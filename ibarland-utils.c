@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 #include <errno.h>
 #include <math.h>
 #include <stdio.h>
@@ -141,12 +142,27 @@ char* intToString( int const n ) {
   // We could just allocate enough space for 11-ish digits, which currently works, but only if sizeof(int) <= 4.
   // We could allocate enough space based on sizeof(int):   ((int)ceil(8*sizeof(int) * log10(2))   digits
   // But hey, we might as well allocate just the right amount:    ceil(log10(n))
-  int nSameDigits = (n==0) ? 1 : (abs(n) < 0 ? abs(n+1) : abs(n)); // A version of n that has the same #digits.
+  int nSameDigits = (n==0)  ?  1  :  (abs(n) < 0  ?  abs(n+1)  :  abs(n)); // A version of n that has the same #digits.
   uint numDigits = (uint)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
   char* nAsStr = (char*) malloc( (numDigits+1+1) * sizeof(char) ); // +1 for sign, +1 for terminating null.
   sprintf( nAsStr, "%i", n );
   return nAsStr;
   }
+
+/* Return a string numeral, for the given int.
+ * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
+ */
+char* uintToString( uint const n ) {
+  // We could just allocate enough space for 11-ish digits, which currently works, but only if sizeof(uint) <= 4.
+  // We could allocate enough space based on sizeof(int):   ((int)ceil(8*sizeof(int) * log10(2))   digits
+  // But hey, we might as well allocate just the right amount:    ceil(log10(n))
+  uint nSameDigits = (n==0)  ?  1  :  n; // A version of n that has the same #digits.
+  uint numDigits = (uint)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
+  char* nAsStr = (char*) malloc( (numDigits+1) * sizeof(char) ); // +1 for terminating null.
+  sprintf( nAsStr, "%u", n );
+  return nAsStr;
+  }
+
 
 /* Return a string numeral, for the given long.
  * The string is heap-allocated; IT IS THE CALLER'S RESPONSIBILITY TO FREE THE STRING when done with it.
@@ -155,7 +171,7 @@ char* longToString( long const n ) {
   // We could just allocate enough space for 20 digits, which currently works, but only if sizeof(long) <= 8.
   // We could allocate enough space based on sizeof(long):   ((int)ceil(8*sizeof(long) * log10(2))   digits
   // But hey, we might as well allocate just the right amount:    ceil(log10(n))
-  long nSameDigits = (n==0) ? 1 : (labs(n) < 0 ? labs(n+1) : labs(n)); // A version of n that has the same #digits.
+  long nSameDigits = (n==0)  ?  1  :  (labs(n) < 0  ?  labs(n+1)  :  labs(n)); // A version of n that has the same #digits.
   uint numDigits = (uint)ceil( log10(nSameDigits+0.001) );  // hack: add epsilon so that n=1000 rounds up to 4, not 3; AND handle n=0.
   char* nAsStr = (char*) malloc( (numDigits+1+1) * sizeof(char) ); // +1 for sign, +1 for terminating null.
   sprintf( nAsStr, "%ld", n );
@@ -186,12 +202,12 @@ char* newStrCat( stringConst strA, stringConst strB ) {
  * or use a macro:   #define SGN(x)  (x)>0 ? 1 : ((x)<0 ? -1 : 0)
  * This version relies on implicit casting up to a long double.
  */
-float sgn( long double const x ) { return isnan(x) ? NAN : ((x > 0) ? 1.0 : ((x < 0) ? -1.0 : 0.0)); }
+float sgn( long double const x ) { return isnan(x)  ?  NAN  :  ((x > 0) ? 1.0 : ((x < 0) ? -1.0 : 0.0)); }
 
 /* a-b, with a floor of 0.  Helpful for unsgiend arithmetic. */
 // Should make this int,int -> uint ?   ->int?
-int monus( int const a, int const b ) { return a>=b ? a-b : 0; }
-uint monus_u( uint const a, uint const b ) { return a>=b ? a-b : 0; }
+int monus( int const a, int const b ) { return a>=b  ?  a-b  :  0; }
+uint monus_u( uint const a, uint const b ) { return a>=b  ?  a-b  :  0; }
 
 double M_TAU = 2* M_PI; // hmm, misleading to name it "M_", since it's not actually in math.h?
 double degToRad(double const theta) { return theta/360 * M_TAU; }
@@ -200,10 +216,10 @@ double radToDeg(double const theta) { return theta/M_TAU * 360; }
 
 /* modPos is like %, except that return val is in [0, b), not (-b, b) */
 int modPos( int const n, int const b ) {
-  return (sgn(n%b) != -sgn(b)) ? n%b : (n%b + b);
+  return (sgn(n%b) != -sgn(b))  ?  n%b  :  (n%b + b);
   }
 long lmodPos( long int const n, long int const b ) {
-  return (sgn(n%b) != -sgn(b)) ? n%b : n%b + b;
+  return (sgn(n%b) != -sgn(b))  ?  n%b  :  n%b + b;
   }
 
 bool isinfinite( double x ) {
@@ -335,6 +351,25 @@ void swap_ul SWAP_BODY(ulong)
 void swap_f SWAP_BODY(float)
 void swap_d SWAP_BODY(double)
 
+
+uint strtou_or_die( stringConst valAsStr, stringConst valRepresents ) {
+    errno = 0;
+    long val = strtol(valAsStr,NULL,0);
+    if (errno) { fprintf(stderr, "%s: %s is invalid %s: %s\n", "strtou_or_die", valRepresents, valAsStr, strerror(errno)); exit(errno); }
+    if (!(0 <= val && val <= UINT_MAX)) { fprintf(stderr, "%s: %s must be in [%i,%u]; got \"%s\" (%li).\n", "strtou_or_die", valRepresents, 0, UINT_MAX, valAsStr, val); exit(ERANGE); }
+    return (uint)val;
+    }
+
+/* Convert a string to an int.  Exit if string isn't a valid int, with `valRepresents` used in the error message. 
+ * Exit with the EINVAL or ERANGE.
+ */
+int strtoi_or_die( stringConst valAsStr, stringConst valRepresents ) {
+    errno = 0;
+    long val = strtol(valAsStr,NULL,0);
+    if (errno) { fprintf(stderr, "%s: %s is invalid %s: %s\n", "strtoi_or_die", valRepresents, valAsStr, strerror(errno)); exit(errno); }
+    if (!(INT_MIN <= val && val <= INT_MAX)) { fprintf(stderr, "%s: %s must be in [%i,%i]; got \"%s\" (%li).\n", "strtoi_or_die", valRepresents, INT_MIN, INT_MAX, valAsStr, val); exit(ERANGE); }
+    return (int)val;
+    }
 
 
 int* newArrayI_uninit( uint sz ) {

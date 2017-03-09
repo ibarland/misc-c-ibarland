@@ -10,6 +10,15 @@ int main() {
     testStr("abc","abc");
     testStr("","");
     testStr(NULL,NULL);
+    testDouble(NAN,NAN);
+    testInt(2+2,4);
+    testInt(-2-2,-4);
+    testInt(INT_MAX,INT_MAX);
+    testInt(INT_MAX+1, INT_MIN);
+
+    testUInt(2+2,4);
+    testUInt(UINT_MAX,UINT_MAX);
+    testUInt(UINT_MAX+1,0);
 
     char* stringOnHeap;
     stringOnHeap = intToString(0);             testStr(stringOnHeap, "0" );           free(stringOnHeap);
@@ -21,6 +30,12 @@ int main() {
     stringOnHeap = intToString( INT_MAX );     testStr(stringOnHeap, "2147483647" );  free(stringOnHeap);
     stringOnHeap = intToString( INT_MIN );     testStr(stringOnHeap, "-2147483648" ); free(stringOnHeap);
     // TODO: for INT_MAX, LONG_MIN, etc:  print them into a clearly-large-enough buffer, and then make sure the results match.
+    stringOnHeap = uintToString(0);             testStr(stringOnHeap, "0" );           free(stringOnHeap);
+    stringOnHeap = uintToString(1);             testStr(stringOnHeap, "1" );           free(stringOnHeap);
+    stringOnHeap = uintToString( 33);           testStr(stringOnHeap,  "33" );         free(stringOnHeap);
+    stringOnHeap = uintToString( 2147483647);   testStr(stringOnHeap, "2147483647" );  free(stringOnHeap);
+    stringOnHeap = uintToString( 2147483648);   testStr(stringOnHeap, "2147483648" );  free(stringOnHeap);
+    stringOnHeap = uintToString( UINT_MAX );    testStr(stringOnHeap, "4294967295" );  free(stringOnHeap);
     
     stringOnHeap = longToString( 0L);          testStr(stringOnHeap, "0" );           free(stringOnHeap);
     stringOnHeap = longToString( 1L);          testStr(stringOnHeap, "1" );           free(stringOnHeap);
@@ -52,7 +67,36 @@ int main() {
     testBool( time_usec() < 3786912000L*1000000L, true );  // < 2090 AD
     printTestMsg("\nCurrent time in ms is %ld. (2016=%ld, 2017=%ld).\n", time_usec(), 1451606400L*1000000L, 1483228800L*1000000L );
     
-    testDouble(NAN,NAN);
+    testInt( strtoi_or_die(  "0", "test-pass-a"),   0 );
+    testInt( strtoi_or_die( "23", "test-pass-b"),  23 );
+    testInt( strtoi_or_die( "    23 ", "test-pass-b"),  23 );
+    testInt( strtoi_or_die("+23", "test-pass-c"), +23 );
+    testInt( strtoi_or_die("-23", "test-pass-d"), -23 );
+    testInt( strtoi_or_die( "2000000000", "test-pass-e"), +2000000000 );
+    testInt( strtoi_or_die("-2000000000", "test-pass-f"), -2000000000 );
+    testInt( strtoi_or_die(intToString(INT_MAX), "test-pass-g"), INT_MAX);
+    testInt( strtoi_or_die(intToString(INT_MIN), "test-pass-h"), INT_MIN);
+    
+    //testInt( strtoi_or_die( "", "oops!a" ), 0 );  // will exit program
+    //testInt( strtoi_or_die( "hi", "oops!b" ), 0 );  // will exit program
+    testInt( strtoi_or_die( "3hi", "oops!c" ), 3 );  // HEY -- this passes!  TODO: use the 2nd arg to strtol
+    //testInt( strtoi_or_die( "3000000000", "oops!d" ), 0 );  // will exit program
+    //testInt( strtoi_or_die( "-3000000000", "oops!e" ), 0 );  // will exit program
+    
+    testUInt( strtou_or_die(  "0", "test-pass-a"),   0 );
+    testUInt( strtou_or_die( "23", "test-pass-b"),  23 );
+    testUInt( strtou_or_die( "    23 ", "test-pass-b"),  23 );
+    testUInt( strtou_or_die("+23", "test-pass-c"), +23 );
+    testUInt( strtou_or_die( "2000000000", "test-pass-e"), +2000000000 );
+    testUInt( strtou_or_die( "3000000000", "test-pass-f" ), +3000000000 );
+    testUInt( strtou_or_die(uintToString(UINT_MAX), "test-pass-g"), UINT_MAX);
+    
+    //testUInt( strtou_or_die( "", "oops!a" ), 0 );  // will exit program
+    //testUInt( strtou_or_die( "hi", "oops!b" ), 0 );  // will exit program
+    testUInt( strtou_or_die( "3hi", "oops!c" ), 3 );  // HEY -- this passes!  TODO: use the 2nd arg to strtol
+    //testUInt( strtou_or_die( "7000000000", "oops!d" ), 0 );  // will exit program
+    //testUInt( strtou_or_die( "-3000000000", "oops!e" ), 0 );  // will exit program
+    
     
     printTestMsg("\nTesting sgn, monus, mod: ");
     testDouble( sgn(0), 0 );
@@ -268,6 +312,7 @@ int main() {
     testStr( arrC_toString("hello", 3, "", "%c", "", ""),
              "hel" );
   
+
     
     printTestMsg("\nTesting array init/fill");
     const uint SZ1 = 8;
