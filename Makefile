@@ -47,13 +47,13 @@ C++FLAGS	= $(CFLAGS) -Wenum-clash
 test: run-utils-test run-utils-test-memory run-command-line-options-test
 
 run-command-line-options-test: command-line-options-test command-line-options-example
-	command-line-options-test
-	command-line-options-example
-	command-line-options-example --file fromCmdLine
-	command-line-options-example --size XXXXM --stuff stuffity-stuff -o other-stuffity-stuff --name fromCmdLine
+	./command-line-options-test
+	./command-line-options-example
+	./command-line-options-example --file fromCmdLine
+	./command-line-options-example --size XXXXM --stuff stuffity-stuff -o other-stuffity-stuff --name fromCmdLine
 
 run-utils-test: ibarland-utils-test
-	ibarland-utils-test
+	./ibarland-utils-test
 
 ibarland-utils-test: ibarland-utils.o ibarland-utils-test.c
 	$(CC_ALL_FLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o $(LDLIBS)
