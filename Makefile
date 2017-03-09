@@ -15,9 +15,12 @@ CFLAGS   = -O3 -g \
            -Wall -Wextra \
            -Wpointer-arith -Wcast-qual -Wcast-align \
            -Wwrite-strings -Wconversion \
-#           -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
-           -Wno-discarded-qualifiers -Wno-ignored-qualifiers -Wno-float-conversion \
+           -Wno-ignored-qualifiers -Wno-float-conversion \
 	   -Woverloaded-virtual
+#
+#          -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
+#          -Wno-discarded-qualifiers  # not on tropic
+
 #
 # don't include:
 # -Wincompatible-pointer-types-discards-qualifiers -- triggers all sorts of errors if passing a string-literal to a function wanting a char*.
@@ -31,6 +34,7 @@ CFLAGS   = -O3 -g \
 CPPFLAGS = -I$(HOME)/Src
 LDLIBS   = -L$(HOME)/Src -lm
 # NOTE: remove `-lrt` if it's causing problems; some versions of gcc don't like that flag.
+CC_ALL_FLAGS = $(CC) $(CFLAGS) $(CPPFLAGS)
 
 
 # command-line args for C++
@@ -40,17 +44,22 @@ C++FLAGS	= $(CFLAGS) -Wenum-clash
 
 
 
-test: run-utils-test run-utils-test-memory command-line-options-test
+test: run-utils-test run-utils-test-memory run-command-line-options-test
+
+run-command-line-options-test: command-line-options-test command-line-options-example
 	command-line-options-test
+	command-line-options-example
+	command-line-options-example --file fromCmdLine
+	command-line-options-example --size XXXXM --stuff stuffity-stuff -o other-stuffity-stuff --name fromCmdLine
 
 run-utils-test: ibarland-utils-test
 	ibarland-utils-test
 
 ibarland-utils-test: ibarland-utils.o ibarland-utils-test.c
-	$(CC) $(CFLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o $(LDLIBS)
+	$(CC_ALL_FLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o $(LDLIBS)
 
 ibarland-utils.o: ibarland-utils.c ibarland-utils.h
-	$(CC) $(CFLAGS) -c ibarland-utils.c
+	$(CC_ALL_FLAGS) -c ibarland-utils.c
 
 
 run-utils-test-memory: ibarland-utils-test
@@ -75,11 +84,11 @@ clean:
 	rm -rf *.app/  *.dSYM
 
 
-command-line-options-example: command-line-options-example.c command-line-options.o ibarland-utils.o
-	$(CC) $(CFLAGS) command-line-options-example.c command-line-options.o ibarland-utils.o -o sample $(LDLIBS)
-
 command-line-options.o: command-line-options.c command-line-options.h ibarland-utils.o
-	$(CC) $(CFLAGS) -c command-line-options.c
+	$(CC_ALL_FLAGS) -c command-line-options.c
 
-command-line-options-test: command-line-options.c command-line-options.h command-line-options-test.c ibarland-utils.o
-	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o $(LDLIBS)
+command-line-options-test: command-line-options-test.c command-line-options.o ibarland-utils.o
+	$(CC_ALL_FLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o $(LDLIBS)
+
+command-line-options-example: command-line-options-example.c command-line-options.o ibarland-utils.o
+	$(CC_ALL_FLAGS) command-line-options-example.c -o command-line-options-example command-line-options.o ibarland-utils.o $(LDLIBS)

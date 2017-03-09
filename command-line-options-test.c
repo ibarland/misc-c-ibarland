@@ -5,14 +5,7 @@
 #include <unistd.h>
 #include "ibarland-utils.h"
 
-
 #include "command-line-options.h"
-struct option_info options[] = {
-    { "file", 'f', NULL, "the file containing the glubglub" },
-    { "name", 'n', "ibarland", "the name of the package-author" },
-    { "size", 's', "45", "the size of the frobzat, in meters." },
-    };
-#define NUM_OPTIONS (SIZEOF_ARRAY(options))
 
 
 
@@ -78,18 +71,12 @@ void test4() {
     testBool( apparentOptionIsLegal( numOpts, options, "--" ), true );
     }
 
-int main ( const int argc, stringConst argv[] ) {
+int main ( void ) {
     test1();
     test2();
     test3();
     test4();
     printTestSummary();
-
-    stringConst* allArgs = allOptions( argc, argv, NUM_OPTIONS, options );
-    printf("The file is: %s\n", allArgs[0] );
-    printf("The name is: %s\n", allArgs[1] );
-    printf("The size is: %s\n", allArgs[2] );
-    return 0;
     }
 
 
