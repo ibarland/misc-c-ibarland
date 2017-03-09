@@ -31,9 +31,10 @@ struct option_info options[] =
 
 
 int main( int argc, char** argv ) {
-    char** settings = allOptions( argc, argv, NUM_OPTIONS, options );
+    stringConst* settings = allOptions( argc, argv, NUM_OPTIONS, options );
     // Now, the array `settings` contains all the options, in order:
     // either taken from the command-line, or from the default given in `options[]`.
+    // Note that `stringConst` is from ibarland-utils.h -- it's just a typedef for `const char * const`.
 
     printf("The size is %s.\n", settings[2] );
     
