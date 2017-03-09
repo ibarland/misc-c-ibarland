@@ -180,16 +180,16 @@ int main() {
     testDouble( MINF(-INFINITY,  INFINITY), -INFINITY );
     testDouble( MINF(-INFINITY, -INFINITY), -INFINITY );
 
-    testDouble( MINF(NAN, 7 ), NAN );
-    testDouble( MINF(7, NAN ), NAN );
+    testDouble( MINF(NAN, 7.0 ), NAN );
+    testDouble( MINF(7.0, NAN ), NAN );
     testDouble( MINF(NAN, NAN ), NAN );
     testDouble( MINF(-INFINITY, NAN ), NAN );
     testDouble( MINF( INFINITY, NAN ), NAN );
     testDouble( MINF(NAN, -INFINITY ) , NAN );
     testDouble( MINF(NAN,  INFINITY ) , NAN );
 
-    testDouble( MAXF(NAN, 7 ), NAN );
-    testDouble( MAXF(7, NAN ), NAN );
+    testDouble( MAXF(NAN, 7.0 ), NAN );
+    testDouble( MAXF(7.0, NAN ), NAN );
     testDouble( MAXF(NAN, NAN ), NAN );
     testDouble( MAXF(-INFINITY, NAN ), NAN );
     testDouble( MAXF( INFINITY, NAN ), NAN );

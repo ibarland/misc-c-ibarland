@@ -15,7 +15,8 @@ CFLAGS   = -O3 -g \
            -Wall -Wextra \
            -Wpointer-arith -Wcast-qual -Wcast-align \
            -Wwrite-strings -Wconversion \
-#          -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
+#           -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
+           -Wno-discarded-qualifiers -Wno-ignored-qualifiers \
 	   -Woverloaded-virtual
 #
 # don't include:
@@ -46,7 +47,7 @@ run-utils-test: ibarland-utils-test
 	ibarland-utils-test
 
 ibarland-utils-test: ibarland-utils.o ibarland-utils-test.c
-	$(CC) $(CFLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o
+	$(CC) $(CFLAGS) ibarland-utils-test.c -o ibarland-utils-test ibarland-utils.o $(LDLIBS)
 
 ibarland-utils.o: ibarland-utils.c ibarland-utils.h
 	$(CC) $(CFLAGS) -c ibarland-utils.c
@@ -75,10 +76,10 @@ clean:
 
 
 command-line-options-example: command-line-options-example.c command-line-options.o ibarland-utils.o
-	$(CC) $(CFLAGS) command-line-options-example.c command-line-options.o ibarland-utils.o -o sample -lm
+	$(CC) $(CFLAGS) command-line-options-example.c command-line-options.o ibarland-utils.o -o sample $(LDLIBS)
 
 command-line-options.o: command-line-options.c command-line-options.h ibarland-utils.o
 	$(CC) $(CFLAGS) -c command-line-options.c
 
 command-line-options-test: command-line-options.c command-line-options.h ibarland-utils.o
-	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o -lm
+	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o $(LDLIBS)
