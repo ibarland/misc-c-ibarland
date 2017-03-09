@@ -81,7 +81,7 @@
 #include <unistd.h> // for pid_t
 #include <stdio.h>  // for fprintf
 
-typedef char const * const   stringConst;
+typedef const char * const stringConst;
 
 typedef   signed char         byte;
 typedef unsigned char        ubyte;

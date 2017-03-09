@@ -16,7 +16,7 @@ CFLAGS   = -O3 -g \
            -Wpointer-arith -Wcast-qual -Wcast-align \
            -Wwrite-strings -Wconversion \
 #           -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
-           -Wno-discarded-qualifiers -Wno-ignored-qualifiers \
+           -Wno-discarded-qualifiers -Wno-ignored-qualifiers -Wno-float-conversion \
 	   -Woverloaded-virtual
 #
 # don't include:
@@ -29,8 +29,8 @@ CFLAGS   = -O3 -g \
 
 
 CPPFLAGS = -I$(HOME)/Src
-LDLIBS   = -L$(HOME)/Src -lm -lrt
-# NOTE: remove `-lrt` if it's causing problems; some older versions of gcc don't like that flag.
+LDLIBS   = -L$(HOME)/Src -lm
+# NOTE: remove `-lrt` if it's causing problems; some versions of gcc don't like that flag.
 
 
 # command-line args for C++
@@ -81,5 +81,5 @@ command-line-options-example: command-line-options-example.c command-line-option
 command-line-options.o: command-line-options.c command-line-options.h ibarland-utils.o
 	$(CC) $(CFLAGS) -c command-line-options.c
 
-command-line-options-test: command-line-options.c command-line-options.h ibarland-utils.o
+command-line-options-test: command-line-options.c command-line-options.h command-line-options-test.c ibarland-utils.o
 	$(CC) $(CFLAGS) command-line-options-test.c -o command-line-options-test ibarland-utils.o $(LDLIBS)

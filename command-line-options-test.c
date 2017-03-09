@@ -5,6 +5,18 @@
 #include <unistd.h>
 #include "ibarland-utils.h"
 
+
+#include "command-line-options.h"
+struct option_info options[] = {
+    { "file", 'f', NULL, "the file containing the glubglub" },
+    { "name", 'n', "ibarland", "the name of the package-author" },
+    { "size", 's', "45", "the size of the frobzat, in meters." },
+    };
+#define NUM_OPTIONS (SIZEOF_ARRAY(options))
+
+
+
+
 // FOR TESTING private functions: We #include the actual C def'ns:
 #include "command-line-options.c" 
 // (So DON'T link against command-line-options.o.)
@@ -37,8 +49,8 @@ void test2(){
 
 void test3() {
     printf("\nTesting findOption.\n");
-    char* sample1[] = { "--hello","tag", "-b","99", "--", "--hello", "tag2" } ;
-    char* sample2[] = { "--hello","tag", "-b","99", "--hello", "tag2" } ;
+    stringConst sample1[] = { "--hello","tag", "-b","99", "--", "--hello", "tag2" } ;
+    stringConst sample2[] = { "--hello","tag", "-b","99", "--hello", "tag2" } ;
     struct option_info options[] = {
         { "hello", 'h', "ibarland", "the name of the package-author" },
         { "bye", 'b', "99", "the size of the frobzat, in meters." },
@@ -55,23 +67,29 @@ void test4() {
         { "name", 'n', "ibarland", "the name of the package-author" },
         { "size", 's', "45", "the size of the frobzat, in meters." },
         };
-    int NUM_OPTIONS = SIZEOF_ARRAY(options);
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "--name" ), true );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "--size" ), true );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "-s" ), true );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "-n" ), true );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "blah" ), true );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "--zasd" ), false );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "-z" ), false );
-    testBool( apparentOptionIsLegal( NUM_OPTIONS, options, "--" ), true );
+    int numOpts = SIZEOF_ARRAY(options);
+    testBool( apparentOptionIsLegal( numOpts, options, "--name" ), true );
+    testBool( apparentOptionIsLegal( numOpts, options, "--size" ), true );
+    testBool( apparentOptionIsLegal( numOpts, options, "-s" ), true );
+    testBool( apparentOptionIsLegal( numOpts, options, "-n" ), true );
+    testBool( apparentOptionIsLegal( numOpts, options, "blah" ), true );
+    testBool( apparentOptionIsLegal( numOpts, options, "--zasd" ), false );
+    testBool( apparentOptionIsLegal( numOpts, options, "-z" ), false );
+    testBool( apparentOptionIsLegal( numOpts, options, "--" ), true );
     }
 
-int main () {
+int main ( const int argc, stringConst argv[] ) {
     test1();
     test2();
     test3();
     test4();
     printTestSummary();
+
+    stringConst* allArgs = allOptions( argc, argv, NUM_OPTIONS, options );
+    printf("The file is: %s\n", allArgs[0] );
+    printf("The name is: %s\n", allArgs[1] );
+    printf("The size is: %s\n", allArgs[2] );
     return 0;
     }
+
 

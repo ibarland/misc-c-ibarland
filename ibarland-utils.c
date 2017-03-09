@@ -168,8 +168,8 @@ char* longToString( long const n ) {
  */
 char* newStrCat( stringConst strA, stringConst strB ) {
   if (strA==NULL && strB==NULL) { return NULL; }
-  else if (strA==NULL) { return strB; }
-  else if (strB==NULL) { return strA; }
+  else if (strA==NULL) { return newStrCat("",strB); }
+  else if (strB==NULL) { return newStrCat(strA,""); }
   else {
     char* rslt = (char*) malloc( strlen(strA) + strlen(strB) + 1 );
     rslt[0] = '\0';

@@ -19,7 +19,7 @@
  * If it wasn't of that form, return NULL.
  * (The result is a pointer into the provided argument.)
  */
-char* extractLongOptionName( char* arg ) {
+stringConst extractLongOptionName( stringConst arg ) {
     if (arg==NULL || (strnlen(arg,3) <= 2) || strncmp(arg,"--",2)!=0) 
         return NULL;
     else
@@ -45,8 +45,8 @@ char extractShortOptionName( stringConst arg ) {
  * If multiple occurrences of the option, we take the last one ('overwriting' previous ones),
  * except that a "--" will halt the option-searching.
  */
-char* findOption( struct option_info target, int n, char* const haystack[] ) {
-    char * answerSoFar = target.defaultValue;
+stringConst findOption( struct option_info target, int n, stringConst haystack[] ) {
+    const char* answerSoFar = target.defaultValue;
     uint i;
     for (i=0;  i < monus_u((uint)n,1u);  i += 1) {
         if (streq(haystack[i],"--")) break;  /* "--" stops option-processing */
@@ -64,7 +64,7 @@ char* findOption( struct option_info target, int n, char* const haystack[] ) {
 
 /* If `arg` looks like it's an option, is it one of the allowed ones in `options`?
  */
-bool apparentOptionIsLegal( int numOptions, struct option_info options[], char* arg ) {
+bool apparentOptionIsLegal( int numOptions, struct option_info options[], stringConst arg ) {
     stringConst asLongOption  = extractLongOptionName(  arg );
     char  asShortOption = extractShortOptionName( arg );
     if (asLongOption==NULL && asShortOption=='\0') return true; 
@@ -96,10 +96,12 @@ bool apparentOptionIsLegal( int numOptions, struct option_info options[], char* 
  *    { {"file","f","-"}, {"name",'n',"ibarland"}, {"size",'s',NULL} }
  * then we'd return {"foo.txt", "ibarland", "27"}.
  */
-char** allOptions( int argc, char* argv[], int numOptions, struct option_info options[] ) {
+stringConst* allOptions( int argc, stringConst argv[], int numOptions, struct option_info options[] ) {
     uint numOptions_u = (uint) numOptions;
     uint argc_u = (uint) argc;
-    char** const allOpts = (char**) malloc( numOptions_u * sizeof(char*) );
+    const char*  *allOpts = (const char* *) malloc( numOptions_u * sizeof(const char*) );
+    // think of allOpts as array-of-stringConst.  But if declared as stringConst* we couldn't
+    // assign into it (since each array-location is itself const).
     uint i;
     for (i=0;  i<numOptions_u;  ++i) {
         allOpts[i] = findOption( options[i], argc, argv );

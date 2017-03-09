@@ -22,8 +22,11 @@
  *  
  * 
  * So if the caller invoked "sample --size 27 -f stuff.txt`,
- * then `allOPtions` would return the array { "stuff.txt", "ibarland", "27" }.
+ * then `allOptions` would return the array { "stuff.txt", "ibarland", "27" }.
  * The items in the return-array are the same order as you list them in `options[]`.
+ * You call `allOptions` by passing it argc and argv, NUM_OPTIONS, and the array options above:
+ *    stringConst* allArgs = allOptions( argc, argv[], NUM_OPTIONS, options );
+ * and your program can use `allArgs[0]` (the --file arg), `allArgs[1]` (--name), and `allArgs[2]` (--size).
  * 
  *
  * See also: `pargs`, a more robust library for doing this 
@@ -61,15 +64,15 @@
 
 // the four-field struct used to define an option:
 struct option_info {
-    char* longOption;
+    stringConst longOption;
     char shortOption;
-    char* defaultValue;
-    char* helpString;
+    stringConst defaultValue;
+    stringConst helpString;
     };
 
 // Return an array of option-values, in the same order as in `options`,
 // taking the values from `argv` (or else the default in `options[i]`).
 //
-char** allOptions( int argc, char* argv[], int numOptions, struct option_info options[] );
+stringConst* allOptions( int argc, stringConst argv[], int numOptions, struct option_info options[] );
 
 #endif
