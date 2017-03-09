@@ -16,7 +16,6 @@ CFLAGS   = -O3 -g \
            -Wpointer-arith -Wcast-qual -Wcast-align \
            -Wwrite-strings -Wconversion \
            -Wno-ignored-qualifiers -Wno-float-conversion \
-	   -Woverloaded-virtual
 #
 #          -Wno-incompatible-pointer-types-discards-qualifiers # not on vm660 \
 #          -Wno-discarded-qualifiers  # not on tropic
@@ -40,7 +39,7 @@ CC_ALL_FLAGS = $(CC) $(CFLAGS) $(CPPFLAGS)
 # command-line args for C++
 #
 C++		= g++
-C++FLAGS	= $(CFLAGS) -Wenum-clash
+C++FLAGS	= $(CFLAGS) -Wenum-clash -Woverloaded-virtual
 
 
 
