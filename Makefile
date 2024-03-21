@@ -4,9 +4,14 @@
 #	[rules]
 #
 # If the file [goal] is older than any of the [dependency] files, then run [rules].
-# But first make sure each [dependency] is itself up-to-date, recursivly.
+# But first make sure each [dependency] is itself up-to-date, recursively.
+#
 # For example, if ibarland-utils.c is edited/updated,
-# this would 
+# this would cause ibarland-utils.o to be out-of-date, which in turn causes
+# ibarland-utils-test to be out-of-date.
+# If you then `make ibarland-utils-test`, 
+# it will re-compile ibarland-utils.c to get ibarland-utils.o, 
+# and then it will re-compile ibarland-utils-test with the updated .o.
 
 # command-line args for C:
 #

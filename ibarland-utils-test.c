@@ -80,6 +80,7 @@ int main() {
     //testInt( strtoi_or_die( "", "oops!a" ), 0 );  // will exit program
     //testInt( strtoi_or_die( "hi", "oops!b" ), 0 );  // will exit program
     testInt( strtoi_or_die( "3hi", "oops!c" ), 3 );  // HEY -- this passes!  TODO: use the 2nd arg to strtol
+    testInt( strtoi_or_die( "3.9", "oops!c2" ), 3 );  // HEY -- this passes!  TODO: use the 2nd arg to strtol
     //testInt( strtoi_or_die( "3000000000", "oops!d" ), 0 );  // will exit program
     //testInt( strtoi_or_die( "-3000000000", "oops!e" ), 0 );  // will exit program
     
